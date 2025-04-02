@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  smooth_page_indicator: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -22,7 +23,14 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/Background.png
+    - assets/backgrounds/
+    - assets/home_page/Education.png
+    - assets/home_page/Alvdorf.png
+    - assets/alverdorf_page/
+
+
+
+    
     # Dodaj kolejne obrazki poniżej:
     # - assets/images/other_image.png
 
