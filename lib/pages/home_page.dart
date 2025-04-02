@@ -20,7 +20,8 @@ class HomePage extends StatelessWidget {
               minHeight: MediaQuery.of(context).size.height,
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 100),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -29,7 +30,7 @@ class HomePage extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          'Witamy w Alvedor!',
+                          'Wytamy w Alvernia Planet!',
                           style: TextStyle(
                             fontSize: 36,
                             fontWeight: FontWeight.bold,
@@ -38,7 +39,7 @@ class HomePage extends StatelessWidget {
                         ),
                         SizedBox(height: 20),
                         Text(
-                          'Odkryj miejsce, gdzie edukacja spotyka przygodę.',
+                          'Wybierz atrakcję!',
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.white70,
@@ -72,7 +73,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-      Widget _buildBox(
+  Widget _buildBox(
     BuildContext context,
     String title,
     String description,
@@ -86,7 +87,8 @@ class HomePage extends StatelessWidget {
       child: Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: 1000),
-          child: MouseRegion( // 🔁 teraz tu!
+          child: MouseRegion(
+            // 🔁 teraz tu!
             onEnter: (_) => isHovered.value = true,
             onExit: (_) => isHovered.value = false,
             child: AspectRatio(
@@ -154,7 +156,8 @@ class HomePage extends StatelessWidget {
                                 Expanded(
                                   child: Text(
                                     description,
-                                    style: TextStyle(fontSize: 16, color: Colors.white),
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.white),
                                   ),
                                 ),
                                 SizedBox(height: 8),
@@ -182,7 +185,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
-
-
 }

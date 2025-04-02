@@ -1,6 +1,9 @@
+import 'package:apewebsite/widgets/footer_village.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class VillagePage extends StatefulWidget {
   const VillagePage({super.key});
@@ -66,7 +69,8 @@ class _VillagePageState extends State<VillagePage> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/backgrounds/BG1 alverdorf.png'), // Ścieżka do pliku PNG
+                image: AssetImage(
+                    'assets/backgrounds/BG1 alverdorf.png'), // Ścieżka do pliku PNG
                 fit: BoxFit.cover,
               ),
             ),
@@ -86,14 +90,14 @@ class _VillagePageState extends State<VillagePage> {
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
-                itemCount: _imagePaths.length + 1, // Dodajemy 1 na stronę z informacjami
+                itemCount: _imagePaths.length + 1, // Dodajemy 1 na Footer
                 itemBuilder: (context, index) {
-                  if (index < _imagePaths.length) {
-                    // Wyświetl obraz
-                    return _AnimatedVillageStep(image: _imagePaths[index]);
+                  if (index == 0) {
+                    // Wyświetl Footer jako pierwszy slajd
+                    return const FooterVillage();
                   } else {
-                    // Wyświetl stronę z informacjami
-                    return _InfoPage();
+                    // Obrazki przesunięte o -1
+                    return _AnimatedVillageStep(image: _imagePaths[index - 1]);
                   }
                 },
               ),
@@ -160,46 +164,6 @@ class _AnimatedVillageStep extends StatelessWidget {
             image,
             fit: BoxFit.cover,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Follow us on Social Media!',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Instagram: @example\nFacebook: Example Page\nTwitter: @example',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.white70,
-              ),
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () {
-                // Dodaj akcję, np. otwarcie strony
-              },
-              child: const Text('Visit our Website'),
-            ),
-          ],
         ),
       ),
     );
