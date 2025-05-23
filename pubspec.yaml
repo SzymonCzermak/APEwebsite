@@ -14,6 +14,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   smooth_page_indicator: ^1.2.1
   font_awesome_flutter: ^10.8.0
+  google_fonts: ^6.2.1
+  provider: ^6.1.4
 
 dev_dependencies:
   flutter_test:
@@ -28,6 +30,9 @@ flutter:
     - assets/home_page/Education.png
     - assets/home_page/Alvdorf.png
     - assets/alverdorf_page/
+    - assets/alverdorf_page/step/
+    - assets/home_page/Alvdorf.png
+
 
 
 

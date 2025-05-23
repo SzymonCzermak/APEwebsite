@@ -29,6 +29,7 @@ class HomePage extends StatelessWidget {
                     alignment: Alignment.topCenter,
                     child: Column(
                       children: [
+                        
                         Text(
                           'Wytamy w Alvernia Planet!',
                           style: TextStyle(
