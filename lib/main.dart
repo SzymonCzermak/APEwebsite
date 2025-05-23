@@ -1,7 +1,7 @@
 import 'package:apewebsite/language_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'pages/home_page.dart';
+import 'pages/home/home_page.dart';
 import 'pages/about_page.dart';
 import 'pages/contact_page.dart';
 import 'pages/tour_page.dart';
