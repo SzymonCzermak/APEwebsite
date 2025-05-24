@@ -243,8 +243,10 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
     required Color textColor,
     required Color accentColor,
   }) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 700;
+
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(isSmallScreen ? 16 : 24),
       decoration: BoxDecoration(
         color: color.withOpacity(0.85),
         borderRadius: BorderRadius.circular(20),
@@ -263,7 +265,7 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
             title.contains('Alverberg')
                 ? 'assets/logos/logo_alverdorf.png'
                 : 'assets/logos/logo_ap.png',
-            height: 170,
+            height: isSmallScreen ? 110 : 170,
             fit: BoxFit.contain,
           ),
           const SizedBox(height: 12),
@@ -271,7 +273,7 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: isSmallScreen ? 16 : 20,
               fontWeight: FontWeight.bold,
               color: accentColor,
             ),
@@ -281,9 +283,9 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
             text,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: isSmallScreen ? 13 : 16,
               color: textColor,
-              height: 1.5,
+              height: 1.4,
             ),
           ),
         ],

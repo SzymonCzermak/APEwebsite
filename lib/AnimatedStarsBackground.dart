@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 const double TWINKLE_SPEED = 40 * pi;
 const int STAR_COUNT = 300;
-const double HIGHLIGHT_RADIUS = 100.0;
+const double HIGHLIGHT_RADIUS = 140.0;
 const Color HIGHLIGHT_COLOR = Color.fromARGB(255, 186, 85, 211); // fiolet
 
 class AnimatedStarsBackground extends StatefulWidget {
@@ -109,27 +109,37 @@ class _StarPainter extends CustomPainter {
 
       final flicker =
           0.5 + 0.5 * sin(animationValue * TWINKLE_SPEED + star.opacityPhase);
-      final radius = star.size * 2;
 
-      bool isNearCursor = cursorPosition != null &&
-          (Offset(dx, dy) - cursorPosition!).distance <= HIGHLIGHT_RADIUS;
+      final starPos = Offset(dx, dy);
+      double distance = cursorPosition != null
+          ? (starPos - cursorPosition!).distance
+          : double.infinity;
+
+      bool isNearCursor = distance <= HIGHLIGHT_RADIUS;
+
+      // Dynamiczne skalowanie
+      double proximity = (1.0 - (distance / HIGHLIGHT_RADIUS)).clamp(0.0, 1.0);
+      double sizeMultiplier = 1.0 + proximity * 10.0; // nawet 3.5x większe
+
+      final double radius = star.size * 2 * sizeMultiplier;
 
       final gradient = RadialGradient(
         colors: isNearCursor
             ? [
-                HIGHLIGHT_COLOR.withOpacity(flicker.clamp(0.0, 1.0)),
-                HIGHLIGHT_COLOR.withOpacity(0),
+                const Color.fromARGB(255, 247, 247, 247)
+                    .withOpacity(0.8 * flicker),
+                const Color.fromARGB(255, 255, 255, 255).withOpacity(0),
               ]
             : [
-                Colors.white.withOpacity(flicker.clamp(0.0, 1.0)),
+                Colors.white.withOpacity(flicker),
                 Colors.white.withOpacity(0),
               ],
       );
 
-      final rect = Rect.fromCircle(center: Offset(dx, dy), radius: radius);
+      final rect = Rect.fromCircle(center: starPos, radius: radius);
       final paint = Paint()..shader = gradient.createShader(rect);
 
-      canvas.drawCircle(Offset(dx, dy), radius, paint);
+      canvas.drawCircle(starPos, radius, paint);
     }
   }
 
