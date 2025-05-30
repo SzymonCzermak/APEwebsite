@@ -8,8 +8,11 @@ import 'pages/tour_page.dart';
 import 'pages/village/village_page.dart';
 import 'widgets/custom_app_bar.dart';
 import 'models/page_type.dart';
+import 'package:url_strategy/url_strategy.dart';
+
 
 void main() {
+  setPathUrlStrategy();
   runApp(
     ChangeNotifierProvider(
       create: (_) => LanguageController(),
@@ -17,6 +20,7 @@ void main() {
     ),
   );
 }
+
 
 class MyWebsite extends StatelessWidget {
   const MyWebsite({super.key});
@@ -26,10 +30,17 @@ class MyWebsite extends StatelessWidget {
     return MaterialApp(
       title: 'Alvernia Planet Education',
       debugShowCheckedModeBanner: false,
-      home: const MainScreen(),
+      routes: {
+        '/': (context) => const MainScreen(),
+        '/alverdorf': (context) => const VillagePage(),
+        '/wycieczka': (context) => const TourPage(),
+        '/kontakt': (context) => const ContactPage(),
+        '/o-nas': (context) => const AboutPage(),
+      },
     );
   }
 }
+
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -42,10 +53,29 @@ class _MainScreenState extends State<MainScreen> {
   PageType _currentPage = PageType.home;
 
   void _changePage(PageType newPage) {
-    setState(() {
-      _currentPage = newPage;
-    });
+  String route;
+  switch (newPage) {
+    case PageType.village:
+      route = '/wioska';
+      break;
+    case PageType.tour:
+      route = '/wycieczka';
+      break;
+    case PageType.contact:
+      route = '/kontakt';
+      break;
+    case PageType.about:
+      route = '/o-nas';
+      break;
+    case PageType.home:
+    default:
+      route = '/';
   }
+
+  Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
+}
+
+
 
   Widget _getPageWidget() {
     switch (_currentPage) {
@@ -67,10 +97,10 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        onTabSelected: _changePage,
-        currentPage: _currentPage,
-      ),
-      body: _getPageWidget(),
+  currentPage: _currentPage,
+),
+
+      body: HomePage(onTabSelected: _changePage),
     );
   }
 }

@@ -4,12 +4,10 @@ import '../models/page_type.dart';
 import '../language_controller.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final void Function(PageType) onTabSelected;
   final PageType currentPage;
 
   const CustomAppBar({
     super.key,
-    required this.onTabSelected,
     required this.currentPage,
   });
 
@@ -27,7 +25,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color.fromARGB(255, 134, 76, 0),
+            Color.fromARGB(255, 0, 21, 65),
             Color.fromARGB(255, 0, 0, 0),
           ],
         ),
@@ -39,14 +37,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           // Lewa część
           Row(
             children: [
+              _buildTab(context, 'Alverdorf', 'Alverdorf', PageType.village),
+              _buildDivider(),
               _buildTab(context, 'Wycieczka', 'Tour', PageType.tour),
               _buildDivider(),
-              _buildTab(context, 'Wioska', 'Village', PageType.village),
+              _buildTab(context, 'Strona Główna', 'Home Page', PageType.home),
             ],
           ),
 
-          // Logo jako Home
-          _buildLogoButton(),
+          // Logo (możesz też dać jako button do /)
+          _buildLogoButton(context),
 
           // Prawa część
           Row(
@@ -59,16 +59,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildDivider() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Text(
-        '|',
-        style: TextStyle(color: Colors.white54, fontSize: 24),
       ),
     );
   }
@@ -103,12 +93,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         iconOutlined = Icons.mail_outline;
         break;
       default:
-        icon = Icons.circle;
-        iconOutlined = Icons.circle_outlined;
+        icon = Icons.home;
+        iconOutlined = Icons.home_outlined;
     }
 
     return GestureDetector(
-      onTap: () => onTabSelected(pageType),
+      onTap: () => Navigator.pushNamed(context, _routeFromPageType(pageType)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -116,14 +106,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               Icon(
                 isSelected ? icon : iconOutlined,
-                color: isSelected ? Colors.amber : Colors.white,
+                color: isSelected
+                    ? const Color.fromARGB(195, 255, 193, 7)
+                    : const Color.fromARGB(255, 180, 180, 180),
                 size: 18,
               ),
               const SizedBox(width: 4),
               Text(
                 isPolish ? pl : en,
                 style: TextStyle(
-                  color: isSelected ? Colors.amber : Colors.white,
+                  color: isSelected
+                      ? Colors.amber
+                      : const Color.fromARGB(255, 181, 180, 180),
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w400,
                   fontSize: 15,
                 ),
@@ -137,22 +131,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget _buildLogoButton() {
-    final isSelected = currentPage == PageType.home;
-
-    return GestureDetector(
-      onTap: () => onTabSelected(PageType.home),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(
-            'assets/logos/logo_ap.png',
-            height: 36,
-            fit: BoxFit.contain,
-          ),
-          const SizedBox(height: 6),
-          _buildUnderline(isSelected),
-        ],
+  Widget _buildDivider() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Text(
+        '|',
+        style: TextStyle(color: Colors.white54, fontSize: 24),
       ),
     );
   }
@@ -178,32 +162,75 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     final controller = context.read<LanguageController>();
     final isPolish = controller.isPolish;
 
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: () => controller.setLanguage(true),
-          child: Text(
-            'PL',
-            style: TextStyle(
-              color: isPolish
-                  ? const Color.fromARGB(255, 0, 46, 172)
-                  : Colors.white,
-              fontWeight: FontWeight.bold,
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white10,
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: Colors.white24),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () => controller.setLanguage(true),
+            borderRadius: BorderRadius.circular(30),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: isPolish ? Colors.amber : Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Text(
+                'PL',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ),
-        ),
-        const SizedBox(width: 8),
-        GestureDetector(
-          onTap: () => controller.setLanguage(false),
-          child: Text(
-            'ENG',
-            style: TextStyle(
-              color: !isPolish ? Colors.amber : Colors.white,
-              fontWeight: FontWeight.bold,
+          InkWell(
+            onTap: () => controller.setLanguage(false),
+            borderRadius: BorderRadius.circular(30),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: !isPolish ? Colors.amber : Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Text(
+                'ENG',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
+  }
+
+  Widget _buildLogoButton(BuildContext context) {
+  return GestureDetector(
+    onTap: () => Navigator.pushNamed(context, '/'),
+    child: Image.asset(
+      'assets/logos/logo_ap.png',
+      height: 45,
+      fit: BoxFit.contain,
+    ),
+  );
+}
+
+
+  String _routeFromPageType(PageType page) {
+    switch (page) {
+      case PageType.village:
+        return '/alverdorf';
+      case PageType.tour:
+        return '/wycieczka';
+      case PageType.contact:
+        return '/kontakt';
+      case PageType.about:
+        return '/o-nas';
+      case PageType.home:
+      default:
+        return '/';
+    }
   }
 }

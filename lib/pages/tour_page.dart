@@ -1,173 +1,49 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:apewebsite/widgets/custom_app_bar.dart';
+import 'package:apewebsite/models/page_type.dart';
+import 'package:provider/provider.dart';
+import 'package:apewebsite/language_controller.dart';
 
-class TourPage extends StatefulWidget {
+class TourPage extends StatelessWidget {
   const TourPage({super.key});
 
   @override
-  State<TourPage> createState() => _TourPageState();
-}
-
-class _TourPageState extends State<TourPage> {
-  final PageController _pageController = PageController();
-  bool isScrolling = false;
-
-  final List<Widget> _pages = const [
-    _TourStep(
-      image: 'assets/tour/step1.png',
-      title: 'Powitanie',
-      description:
-          'Rozpoczynamy wycieczkę edukacyjną od powitania i krótkiego wprowadzenia.',
-    ),
-    _TourStep(
-      image: 'assets/tour/step2.png',
-      title: 'Zwiedzanie obiektu',
-      description:
-          'Zobaczysz scenografię, technologię filmową i poznasz kulisy powstawania filmów.',
-    ),
-    _TourStep(
-      image: 'assets/tour/step3.png',
-      title: 'Warsztaty i zabawa',
-      description:
-          'Czas na kreatywność i ruch! Weź udział w warsztatach i zabawie edukacyjnej.',
-    ),
-  ];
-
-  void _handleScroll(double delta, {required bool isMouse}) async {
-    if (!isScrolling) {
-      isScrolling = true;
-
-      if (isMouse) {
-        if (delta > 0) {
-          await _pageController.nextPage(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut,
-          );
-        } else if (delta < 0) {
-          await _pageController.previousPage(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut,
-          );
-        }
-      } else {
-        if (delta < 0) {
-          await _pageController.nextPage(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut,
-          );
-        } else if (delta > 0) {
-          await _pageController.previousPage(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut,
-          );
-        }
-      }
-
-      await Future.delayed(const Duration(milliseconds: 550));
-      isScrolling = false;
-    }
-  }
-
-
-  @override
   Widget build(BuildContext context) {
+    final isPolish = context.watch<LanguageController>().isPolish;
+
     return Scaffold(
-      body: Listener(
-        onPointerSignal: (event) {
-          if (event is PointerScrollEvent) {
-            _handleScroll(event.scrollDelta.dy, isMouse: true);
-          }
-        },
-        child: GestureDetector(
-          onVerticalDragUpdate: (details) {
-            _handleScroll(details.primaryDelta ?? 0, isMouse: false);
-          },
-          child: Stack(
+      appBar: const CustomAppBar(currentPage: PageType.tour),
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              PageView(
-                controller: _pageController,
-                scrollDirection: Axis.vertical,
-                physics: const NeverScrollableScrollPhysics(),
-                children: _pages,
+              const Icon(Icons.construction, size: 80, color: Colors.orangeAccent),
+              const SizedBox(height: 24),
+              Text(
+                isPolish ? 'Strona w budowie' : 'Page under construction',
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-              Positioned(
-                right: 16,
-                top: MediaQuery.of(context).size.height / 2 - 40,
-                child: SmoothPageIndicator(
-                  controller: _pageController,
-                  count: _pages.length,
-                  axisDirection: Axis.vertical,
-                  effect: WormEffect(
-                    activeDotColor: Colors.redAccent,
-                    dotHeight: 12,
-                    dotWidth: 12,
-                    spacing: 16,
-                    dotColor: Colors.grey.withOpacity(0.5),
-                  ),
+              const SizedBox(height: 12),
+              Text(
+                isPolish
+                    ? 'Pracujemy nad tą sekcją wycieczki edukacyjnej.\nZajrzyj tu wkrótce!'
+                    : 'We\'re working on this educational tour section.\nCheck back soon!',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.white70,
                 ),
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _TourStep extends StatelessWidget {
-  final String image;
-  final String title;
-  final String description;
-
-  const _TourStep({
-    required this.image,
-    required this.title,
-    required this.description,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox.expand(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            image,
-            fit: BoxFit.cover,
-          ),
-          Container(
-            color: Colors.black.withOpacity(0.4),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    description,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Colors.white70,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
       ),
     );
   }

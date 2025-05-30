@@ -25,8 +25,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _pages = [
-      const HomeStep1(),
-    ];
+  HomeStep1(
+    onTabSelected: widget.onTabSelected ?? (page) {},
+  ),
+];
+
   }
 
   void _handleScroll(double delta, {required bool isMouse}) async {

@@ -1,15 +1,14 @@
-import 'package:apewebsite/pages/village/footer_village.dart';
-import 'package:apewebsite/pages/village/village_step_2.dart';
 import 'package:apewebsite/pages/village/village_step_3.dart';
 import 'package:apewebsite/pages/village/village_step_4.dart';
 import 'package:apewebsite/pages/village/village_step_5.dart';
-import 'package:apewebsite/pages/village/village_step_6.dart';
-
+import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:apewebsite/background/AnimatedSlavicBackground.dart';
+import 'package:apewebsite/pages/village/footer_village.dart';
+import 'package:apewebsite/pages/village/village_step_2.dart';
+import 'package:apewebsite/widgets/custom_app_bar.dart';
+import 'package:apewebsite/models/page_type.dart';
 
 class VillagePage extends StatefulWidget {
   const VillagePage({super.key});
@@ -23,11 +22,14 @@ class _VillagePageState extends State<VillagePage> {
   bool isScrolling = false;
 
   final List<Widget> _pages = const [
-  _AnimatedVillageStep(image: 'assets/alverdorf_page/1.png'), // obraz jako pierwszy
-  VillageStep2(),
-  FooterVillage(), // na końcu
-];
+    _AnimatedVillageStep(image: 'assets/alverdorf_page/1.png'),
+    VillageStep2(),
+    VillageStep3(),
+    VillageStep4(),
+    VillageStep5(),
 
+    FooterVillage(),
+  ];
 
   void _handleScroll(double delta, {required bool isMouse}) async {
     if (!isScrolling) {
@@ -59,7 +61,7 @@ class _VillagePageState extends State<VillagePage> {
         }
       }
 
-      await Future.delayed(const Duration(milliseconds: 550));
+      await Future.delayed(const Duration(milliseconds: 800));
       isScrolling = false;
     }
   }
@@ -67,19 +69,10 @@ class _VillagePageState extends State<VillagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CustomAppBar(currentPage: PageType.village),
       body: Stack(
         children: [
-          // Statyczne tło
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                    'assets/backgrounds/village_background.png'), // Ścieżka do pliku PNG
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          // Przewijane obrazy
+          const AnimatedSlavicBackground(),
           GestureDetector(
             onVerticalDragUpdate: (details) {
               _handleScroll(details.primaryDelta ?? 0, isMouse: false);
@@ -99,7 +92,6 @@ class _VillagePageState extends State<VillagePage> {
               ),
             ),
           ),
-          // Wskaźnik stron
           Positioned(
             right: 16,
             top: MediaQuery.of(context).size.height / 2 - 40,
@@ -130,8 +122,8 @@ class _AnimatedVillageStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final maxContentWidth = screenWidth * 0.7; // 70% szerokości ekranu
-    final height = maxContentWidth / (11 / 8); // Proporcja 11:8
+    final maxContentWidth = screenWidth * 0.7;
+    final height = maxContentWidth / (11 / 8);
 
     return Center(
       child: Container(

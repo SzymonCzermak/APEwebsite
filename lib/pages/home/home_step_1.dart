@@ -1,11 +1,14 @@
+import 'package:apewebsite/models/page_type.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:apewebsite/language_controller.dart';
-import 'package:apewebsite/AnimatedStarsBackground.dart';
+import 'package:apewebsite/background/AnimatedStarsBackground.dart';
 
 class HomeStep1 extends StatefulWidget {
-  const HomeStep1({super.key});
+  final void Function(PageType) onTabSelected;
+
+  const HomeStep1({super.key, required this.onTabSelected});
 
   @override
   State<HomeStep1> createState() => _HomeStep1State();
@@ -26,35 +29,18 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    _headerController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-
-    _descriptionController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-
-    _cardsController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1600),
-    );
+    _headerController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
+    _descriptionController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
+    _cardsController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600));
 
     _headerOpacity = Tween(begin: 0.0, end: 1.0).animate(_headerController);
-    _descriptionOpacity =
-        Tween(begin: 0.0, end: 1.0).animate(_descriptionController);
+    _descriptionOpacity = Tween(begin: 0.0, end: 1.0).animate(_descriptionController);
     _cardsOpacity = Tween(begin: 0.0, end: 1.0).animate(_cardsController);
 
-    _leftCardOffset = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _cardsController, curve: Curves.easeOut));
-
-    _rightCardOffset = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _cardsController, curve: Curves.easeOut));
+    _leftCardOffset = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _cardsController, curve: Curves.easeOut));
+    _rightCardOffset = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _cardsController, curve: Curves.easeOut));
 
     _startAnimations();
   }
@@ -78,17 +64,18 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final isPolish = context.watch<LanguageController>().isPolish;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth < 700;
+    final size = MediaQuery.of(context).size;
+    final isSmallScreen = size.width < 700;
+    final cardHeight = size.height * 0.2;
+    final cardWidth = size.width * 0.7;
 
-    final String leftTitle =
-        isPolish ? 'Ścieżka Edukacyjna' : 'Educational Path';
-    final String leftText = isPolish
+    final leftTitle = isPolish ? 'Ścieżka Edukacyjna' : 'Educational Path';
+    final leftText = isPolish
         ? 'Dowiedz się, że nie wszystko w filmie jest prawdą.\nZajrzyj za kulisy magii kina.'
         : 'Discover that not everything in film is real.\nPeek behind the scenes of movie magic.';
 
-    final String rightTitle = 'Alverberg';
-    final String rightText = isPolish
+    final rightTitle = 'Alverdorf';
+    final rightText = isPolish
         ? 'Baśń w sercu lasu.\nImmersyjna wioska fantasy w scenografii serialu Netflixa.'
         : 'A fairy tale in the heart of the forest.\nAn immersive fantasy village from a Netflix set.';
 
@@ -100,8 +87,7 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1200),
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: isSmallScreen ? 16 : 32, vertical: 48),
+                padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 16 : 32, vertical: 48),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -135,8 +121,7 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                     FadeTransition(
                       opacity: _descriptionOpacity,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: isSmallScreen ? 12 : 60),
+                        padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 60),
                         child: Text(
                           isPolish
                               ? 'Miejscu, gdzie rzeczywistość zakłada maskę iluzji, światło przecina mrok szklanych tuneli, a między futurystycznymi kopułami rozbrzmiewa echo dawnych wierzeń.'
@@ -154,42 +139,9 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                     isSmallScreen
                         ? Column(
                             children: [
-                              SlideTransition(
-                                position: _leftCardOffset,
-                                child: FadeTransition(
-                                  opacity: _cardsOpacity,
-                                  child: _buildCard(
-                                    title: leftTitle,
-                                    text: leftText,
-                                    color:
-                                        const Color.fromARGB(255, 0, 35, 139),
-                                    textColor: Colors.white70,
-                                    accentColor: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 24),
-                              SlideTransition(
-                                position: _rightCardOffset,
-                                child: FadeTransition(
-                                  opacity: _cardsOpacity,
-                                  child: _buildCard(
-                                    title: rightTitle,
-                                    text: rightText,
-                                    color: const Color.fromARGB(
-                                        255, 151, 133, 126),
-                                    textColor:
-                                        const Color.fromARGB(255, 22, 20, 20),
-                                    accentColor: const Color.fromARGB(
-                                        255, 212, 197, 163),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        : Row(
-                            children: [
-                              Expanded(
+                              SizedBox(
+                                height: cardHeight,
+                                width: cardWidth,
                                 child: SlideTransition(
                                   position: _leftCardOffset,
                                   child: FadeTransition(
@@ -197,16 +149,18 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                                     child: _buildCard(
                                       title: leftTitle,
                                       text: leftText,
-                                      color:
-                                          const Color.fromARGB(255, 0, 35, 139),
+                                      color: const Color.fromARGB(255, 0, 35, 139),
                                       textColor: Colors.white70,
                                       accentColor: Colors.white,
+                                      onTap: () => widget.onTabSelected(PageType.tour),
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 32),
-                              Expanded(
+                              const SizedBox(height: 24),
+                              SizedBox(
+                                height: cardHeight,
+                                width: cardWidth,
                                 child: SlideTransition(
                                   position: _rightCardOffset,
                                   child: FadeTransition(
@@ -214,17 +168,55 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                                     child: _buildCard(
                                       title: rightTitle,
                                       text: rightText,
-                                      color: const Color.fromARGB(
-                                          255, 151, 133, 126),
-                                      textColor:
-                                          const Color.fromARGB(255, 22, 20, 20),
-                                      accentColor: const Color.fromARGB(
-                                          255, 212, 197, 163),
+                                      color: const Color.fromARGB(255, 163, 150, 129),
+                                      textColor: const Color.fromARGB(255, 22, 20, 20),
+                                      accentColor: const Color.fromARGB(255, 61, 40, 26),
+                                      onTap: () => widget.onTabSelected(PageType.village),
                                     ),
                                   ),
                                 ),
                               ),
                             ],
+                          )
+                        : IntrinsicHeight(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(
+                                  child: SlideTransition(
+                                    position: _leftCardOffset,
+                                    child: FadeTransition(
+                                      opacity: _cardsOpacity,
+                                      child: _buildCard(
+                                        title: leftTitle,
+                                        text: leftText,
+                                        color: const Color.fromARGB(255, 0, 35, 139),
+                                        textColor: Colors.white70,
+                                        accentColor: Colors.white,
+                                        onTap: () => widget.onTabSelected(PageType.tour),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 32),
+                                Expanded(
+                                  child: SlideTransition(
+                                    position: _rightCardOffset,
+                                    child: FadeTransition(
+                                      opacity: _cardsOpacity,
+                                      child: _buildCard(
+                                        title: rightTitle,
+                                        text: rightText,
+                                        color: const Color.fromARGB(255, 163, 150, 129),
+                                        textColor: const Color.fromARGB(255, 22, 20, 20),
+                                        accentColor: const Color.fromARGB(255, 61, 40, 26),
+                                        onTap: () => widget.onTabSelected(PageType.village),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                   ],
                 ),
@@ -242,53 +234,61 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
     required Color color,
     required Color textColor,
     required Color accentColor,
+    required VoidCallback onTap,
   }) {
     final isSmallScreen = MediaQuery.of(context).size.width < 700;
 
-    return Container(
-      padding: EdgeInsets.all(isSmallScreen ? 16 : 24),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.85),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.4),
-            blurRadius: 24,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            title.contains('Alverberg')
-                ? 'assets/logos/logo_alverdorf.png'
-                : 'assets/logos/logo_ap.png',
-            height: isSmallScreen ? 110 : 170,
-            fit: BoxFit.contain,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: isSmallScreen ? 16 : 20,
-              fontWeight: FontWeight.bold,
-              color: accentColor,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(isSmallScreen ? 16 : 24),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.85),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.4),
+              blurRadius: 24,
+              offset: const Offset(0, 10),
             ),
+          ],
+        ),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                title.contains('Alverdorf')
+                    ? 'assets/logos/logo_alverdorf.png'
+                    : 'assets/logos/logo_ap.png',
+                height: 150,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: accentColor,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: accentColor,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 10),
-          Text(
-            text,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: isSmallScreen ? 13 : 16,
-              color: textColor,
-              height: 1.4,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
