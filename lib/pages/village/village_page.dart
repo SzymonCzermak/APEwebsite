@@ -1,14 +1,14 @@
+import 'package:apewebsite/pages/village/village_step_2.dart';
 import 'package:apewebsite/pages/village/village_step_3.dart';
 import 'package:apewebsite/pages/village/village_step_4.dart';
 import 'package:apewebsite/pages/village/village_step_5.dart';
+import 'package:apewebsite/pages/village/footer_village.dart';
+import 'package:apewebsite/background/AnimatedSlavicBackground.dart';
+import 'package:apewebsite/widgets/custom_app_bar.dart';
+import 'package:apewebsite/models/page_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:apewebsite/background/AnimatedSlavicBackground.dart';
-import 'package:apewebsite/pages/village/footer_village.dart';
-import 'package:apewebsite/pages/village/village_step_2.dart';
-import 'package:apewebsite/widgets/custom_app_bar.dart';
-import 'package:apewebsite/models/page_type.dart';
 
 class VillagePage extends StatefulWidget {
   const VillagePage({super.key});
@@ -27,7 +27,6 @@ class _VillagePageState extends State<VillagePage> {
     VillageStep3(),
     VillageStep4(),
     VillageStep5(),
-
     FooterVillage(),
   ];
 
@@ -72,7 +71,7 @@ class _VillagePageState extends State<VillagePage> {
       appBar: const CustomAppBar(currentPage: PageType.village),
       body: Stack(
         children: [
-          const AnimatedSlavicBackground(),
+          const AnimatedForestSpirits(),
           GestureDetector(
             onVerticalDragUpdate: (details) {
               _handleScroll(details.primaryDelta ?? 0, isMouse: false);
@@ -100,11 +99,12 @@ class _VillagePageState extends State<VillagePage> {
               count: _pages.length,
               axisDirection: Axis.vertical,
               effect: WormEffect(
-                activeDotColor: Colors.blueAccent,
+                activeDotColor: const Color.fromARGB(255, 201, 114, 0),
                 dotHeight: 12,
                 dotWidth: 12,
                 spacing: 16,
-                dotColor: Colors.grey.withOpacity(0.5),
+                dotColor:
+                    const Color.fromARGB(255, 212, 212, 212).withOpacity(0.5),
               ),
             ),
           ),
@@ -114,10 +114,44 @@ class _VillagePageState extends State<VillagePage> {
   }
 }
 
-class _AnimatedVillageStep extends StatelessWidget {
+class _AnimatedVillageStep extends StatefulWidget {
   final String image;
 
   const _AnimatedVillageStep({required this.image});
+
+  @override
+  State<_AnimatedVillageStep> createState() => _AnimatedVillageStepState();
+}
+
+class _AnimatedVillageStepState extends State<_AnimatedVillageStep>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _opacity;
+  late final Animation<Offset> _offset;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+
+    _opacity = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+
+    _offset = Tween<Offset>(begin: const Offset(0, 0.05), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,31 +160,28 @@ class _AnimatedVillageStep extends StatelessWidget {
     final height = maxContentWidth / (11 / 8);
 
     return Center(
-      child: Container(
-        width: maxContentWidth,
-        height: height,
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 20,
+      child: SlideTransition(
+        position: _offset,
+        child: FadeTransition(
+          opacity: _opacity,
+          child: Container(
+            width: maxContentWidth,
+            height: height,
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 20,
+                ),
+              ],
             ),
-          ],
-        ),
-        child: TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0.0, end: 1.0),
-          duration: const Duration(milliseconds: 700),
-          builder: (context, opacity, child) {
-            return Opacity(
-              opacity: opacity,
-              child: child,
-            );
-          },
-          child: Image.asset(
-            image,
-            fit: BoxFit.cover,
+            child: Image.asset(
+              widget.image,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.medium,
+            ),
           ),
         ),
       ),

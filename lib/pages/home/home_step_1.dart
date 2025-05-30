@@ -29,18 +29,24 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    _headerController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
-    _descriptionController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
-    _cardsController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600));
+    _headerController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1200));
+    _descriptionController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1200));
+    _cardsController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1600));
 
     _headerOpacity = Tween(begin: 0.0, end: 1.0).animate(_headerController);
-    _descriptionOpacity = Tween(begin: 0.0, end: 1.0).animate(_descriptionController);
+    _descriptionOpacity =
+        Tween(begin: 0.0, end: 1.0).animate(_descriptionController);
     _cardsOpacity = Tween(begin: 0.0, end: 1.0).animate(_cardsController);
 
-    _leftCardOffset = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _cardsController, curve: Curves.easeOut));
-    _rightCardOffset = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _cardsController, curve: Curves.easeOut));
+    _leftCardOffset =
+        Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
+            CurvedAnimation(parent: _cardsController, curve: Curves.easeOut));
+    _rightCardOffset =
+        Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
+            CurvedAnimation(parent: _cardsController, curve: Curves.easeOut));
 
     _startAnimations();
   }
@@ -87,7 +93,8 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1200),
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 16 : 32, vertical: 48),
+                padding: EdgeInsets.symmetric(
+                    horizontal: isSmallScreen ? 16 : 32, vertical: 48),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -121,7 +128,8 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                     FadeTransition(
                       opacity: _descriptionOpacity,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 60),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: isSmallScreen ? 12 : 60),
                         child: Text(
                           isPolish
                               ? 'Miejscu, gdzie rzeczywistość zakłada maskę iluzji, światło przecina mrok szklanych tuneli, a między futurystycznymi kopułami rozbrzmiewa echo dawnych wierzeń.'
@@ -149,10 +157,12 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                                     child: _buildCard(
                                       title: leftTitle,
                                       text: leftText,
-                                      color: const Color.fromARGB(255, 0, 35, 139),
+                                      color:
+                                          const Color.fromARGB(255, 0, 35, 139),
                                       textColor: Colors.white70,
                                       accentColor: Colors.white,
-                                      onTap: () => widget.onTabSelected(PageType.tour),
+                                      onTap: () =>
+                                          widget.onTabSelected(PageType.tour),
                                     ),
                                   ),
                                 ),
@@ -168,10 +178,14 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                                     child: _buildCard(
                                       title: rightTitle,
                                       text: rightText,
-                                      color: const Color.fromARGB(255, 163, 150, 129),
-                                      textColor: const Color.fromARGB(255, 22, 20, 20),
-                                      accentColor: const Color.fromARGB(255, 61, 40, 26),
-                                      onTap: () => widget.onTabSelected(PageType.village),
+                                      color: const Color.fromARGB(
+                                          255, 163, 150, 129),
+                                      textColor:
+                                          const Color.fromARGB(255, 22, 20, 20),
+                                      accentColor:
+                                          const Color.fromARGB(255, 61, 40, 26),
+                                      onTap: () => widget
+                                          .onTabSelected(PageType.village),
                                     ),
                                   ),
                                 ),
@@ -190,10 +204,12 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                                       child: _buildCard(
                                         title: leftTitle,
                                         text: leftText,
-                                        color: const Color.fromARGB(255, 0, 35, 139),
+                                        color: const Color.fromARGB(
+                                            255, 0, 35, 139),
                                         textColor: Colors.white70,
                                         accentColor: Colors.white,
-                                        onTap: () => widget.onTabSelected(PageType.tour),
+                                        onTap: () =>
+                                            widget.onTabSelected(PageType.tour),
                                       ),
                                     ),
                                   ),
@@ -207,10 +223,14 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                                       child: _buildCard(
                                         title: rightTitle,
                                         text: rightText,
-                                        color: const Color.fromARGB(255, 163, 150, 129),
-                                        textColor: const Color.fromARGB(255, 22, 20, 20),
-                                        accentColor: const Color.fromARGB(255, 61, 40, 26),
-                                        onTap: () => widget.onTabSelected(PageType.village),
+                                        color: const Color.fromARGB(
+                                            255, 163, 150, 129),
+                                        textColor: const Color.fromARGB(
+                                            255, 22, 20, 20),
+                                        accentColor: const Color.fromARGB(
+                                            255, 61, 40, 26),
+                                        onTap: () => widget
+                                            .onTabSelected(PageType.village),
                                       ),
                                     ),
                                   ),

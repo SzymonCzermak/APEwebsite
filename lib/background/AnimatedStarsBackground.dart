@@ -2,8 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 const double TWINKLE_SPEED = 40 * pi;
-const int STAR_COUNT = 300;
-const double HIGHLIGHT_RADIUS = 140.0;
+const int STAR_COUNT = 500;
+const double HIGHLIGHT_RADIUS = 100.0;
 const Color HIGHLIGHT_COLOR = Color.fromARGB(255, 186, 85, 211); // fiolet
 
 class AnimatedStarsBackground extends StatefulWidget {

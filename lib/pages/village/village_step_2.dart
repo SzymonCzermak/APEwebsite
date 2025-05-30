@@ -10,28 +10,43 @@ class VillageStep2 extends StatefulWidget {
   State<VillageStep2> createState() => _VillageStep2State();
 }
 
-class _VillageStep2State extends State<VillageStep2> with TickerProviderStateMixin {
-  late final AnimationController _textController;
+class _VillageStep2State extends State<VillageStep2>
+    with TickerProviderStateMixin {
+  late final AnimationController _titleController;
+  late final AnimationController _descController;
   late final AnimationController _imageController;
 
   @override
   void initState() {
     super.initState();
-    _textController = AnimationController(
+    _titleController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _descController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
     _imageController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 700),
       vsync: this,
     );
-    // Start text animation, then image after slight delay
-    _textController.forward().then((_) => _imageController.forward());
+
+    _titleController.forward().then((_) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _descController.forward().then((_) {
+          Future.delayed(const Duration(milliseconds: 800), () {
+            _imageController.forward();
+          });
+        });
+      });
+    });
   }
 
   @override
   void dispose() {
-    _textController.dispose();
+    _titleController.dispose();
+    _descController.dispose();
     _imageController.dispose();
     super.dispose();
   }
@@ -42,7 +57,8 @@ class _VillageStep2State extends State<VillageStep2> with TickerProviderStateMix
     final isMobile = screenWidth < 750;
     final isPolish = context.watch<LanguageController>().isPolish;
     final screenHeight = MediaQuery.of(context).size.height;
-    final shortestSide = screenWidth < screenHeight ? screenWidth : screenHeight;
+    final shortestSide =
+        screenWidth < screenHeight ? screenWidth : screenHeight;
 
     final titleFontSize = shortestSide.clamp(280, 800) * 0.045;
     final bodyFontSize = shortestSide.clamp(280, 800) * 0.025;
@@ -57,16 +73,13 @@ class _VillageStep2State extends State<VillageStep2> with TickerProviderStateMix
             child: Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(24),
               ),
               child: isMobile
                   ? Column(
                       children: [
-                        _AnimatedSlideFade(
-                          animation: _textController,
-                          child: _buildText(titleFontSize, bodyFontSize, isPolish),
-                        ),
+                        _buildText(titleFontSize, bodyFontSize, isPolish),
                         const SizedBox(height: 24),
                         _AnimatedSlideFade(
                           animation: _imageController,
@@ -81,10 +94,8 @@ class _VillageStep2State extends State<VillageStep2> with TickerProviderStateMix
                           flex: 3,
                           child: Padding(
                             padding: const EdgeInsets.only(right: 24.0),
-                            child: _AnimatedSlideFade(
-                              animation: _textController,
-                              child: _buildText(titleFontSize, bodyFontSize, isPolish),
-                            ),
+                            child: _buildText(
+                                titleFontSize, bodyFontSize, isPolish),
                           ),
                         ),
                         Expanded(
@@ -109,41 +120,47 @@ class _VillageStep2State extends State<VillageStep2> with TickerProviderStateMix
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          isPolish ? 'Czym jest Alverdorf?' : 'What is Alverdorf?',
-          textAlign: TextAlign.center,
-          textDirection: TextDirection.ltr,
-          style: GoogleFonts.imFellEnglishSc(
-            fontSize: titleSize,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            shadows: const [
-              Shadow(
-                blurRadius: 6,
-                color: Colors.black87,
-                offset: Offset(0, 2),
-              ),
-            ],
+        _AnimatedSlideFade(
+          animation: _titleController,
+          beginOffset: const Offset(0, 0.2),
+          child: Text(
+            isPolish ? 'Czym jest Alverdorf?' : 'What is Alverdorf?',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.imFellEnglishSc(
+              fontSize: titleSize,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              shadows: const [
+                Shadow(
+                  blurRadius: 6,
+                  color: Colors.black,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 16),
-        Text(
-          isPolish
-              ? '''Gdzieś na skraju rzeczywistości i baśni, w sercu pradawnej puszczy, istnieje miejsce utkane z opowieści – Alverdorf. To nie jest zwykła wioska, lecz przestrzeń, gdzie historia ożywa, a każdy, kto tu przybywa, staje się jej częścią.'''
-              : '''Somewhere on the edge of reality and fairy tales, deep in an ancient forest, lies a place woven from stories – Alverdorf. It is not just a village, but a realm where history comes to life and everyone who enters becomes part of it.''',
-          textAlign: TextAlign.center,
-          textDirection: TextDirection.ltr,
-          style: GoogleFonts.imFellEnglishSc(
-            fontSize: bodySize,
-            color: Colors.white,
-            height: 1.4,
-            shadows: const [
-              Shadow(
-                blurRadius: 4,
-                color: Colors.black,
-                offset: Offset(0, 2),
-              ),
-            ],
+        _AnimatedSlideFade(
+          animation: _descController,
+          beginOffset: const Offset(0, 0.25),
+          child: Text(
+            isPolish
+                ? '''Gdzieś na skraju rzeczywistości i baśni, w sercu pradawnej puszczy, istnieje miejsce utkane z opowieści – Alverdorf. To nie jest zwykła wioska, lecz przestrzeń, gdzie historia ożywa, a każdy, kto tu przybywa, staje się jej częścią.'''
+                : '''Somewhere on the edge of reality and fairy tales, deep in an ancient forest, lies a place woven from stories – Alverdorf. It is not just a village, but a realm where history comes to life and everyone who enters becomes part of it.''',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.imFellEnglishSc(
+              fontSize: bodySize,
+              color: Colors.white,
+              height: 1.4,
+              shadows: const [
+                Shadow(
+                  blurRadius: 4,
+                  color: Colors.black,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -162,6 +179,7 @@ class _VillageStep2State extends State<VillageStep2> with TickerProviderStateMix
             child: Image.asset(
               'assets/alverdorf_page/step/1.png',
               fit: BoxFit.cover,
+              filterQuality: FilterQuality.medium,
             ),
           ),
         ),
@@ -187,15 +205,14 @@ class _AnimatedSlideFade extends StatelessWidget {
     return AnimatedBuilder(
       animation: animation,
       builder: (context, _) {
-        final double opacity = animation.value;
         final offset = Offset(
           beginOffset.dx * (1 - animation.value),
           beginOffset.dy * (1 - animation.value),
         );
         return Opacity(
-          opacity: opacity,
+          opacity: animation.value,
           child: Transform.translate(
-            offset: offset * 60, // delikatny przesuw na start
+            offset: offset * 60,
             child: child,
           ),
         );

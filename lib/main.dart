@@ -10,7 +10,6 @@ import 'widgets/custom_app_bar.dart';
 import 'models/page_type.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-
 void main() {
   setPathUrlStrategy();
   runApp(
@@ -20,7 +19,6 @@ void main() {
     ),
   );
 }
-
 
 class MyWebsite extends StatelessWidget {
   const MyWebsite({super.key});
@@ -41,7 +39,6 @@ class MyWebsite extends StatelessWidget {
   }
 }
 
-
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -53,29 +50,27 @@ class _MainScreenState extends State<MainScreen> {
   PageType _currentPage = PageType.home;
 
   void _changePage(PageType newPage) {
-  String route;
-  switch (newPage) {
-    case PageType.village:
-      route = '/wioska';
-      break;
-    case PageType.tour:
-      route = '/wycieczka';
-      break;
-    case PageType.contact:
-      route = '/kontakt';
-      break;
-    case PageType.about:
-      route = '/o-nas';
-      break;
-    case PageType.home:
-    default:
-      route = '/';
+    String route;
+    switch (newPage) {
+      case PageType.village:
+        route = '/wioska';
+        break;
+      case PageType.tour:
+        route = '/wycieczka';
+        break;
+      case PageType.contact:
+        route = '/kontakt';
+        break;
+      case PageType.about:
+        route = '/o-nas';
+        break;
+      case PageType.home:
+      default:
+        route = '/';
+    }
+
+    Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
   }
-
-  Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
-}
-
-
 
   Widget _getPageWidget() {
     switch (_currentPage) {
@@ -97,9 +92,8 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-  currentPage: _currentPage,
-),
-
+        currentPage: _currentPage,
+      ),
       body: HomePage(onTabSelected: _changePage),
     );
   }
