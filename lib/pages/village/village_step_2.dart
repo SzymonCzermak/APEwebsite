@@ -27,23 +27,23 @@ class _VillageStep2State extends State<VillageStep2>
     super.initState();
 
     _titleController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 500), // szybciej
       vsync: this,
     );
     _descController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
     _imageController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 800), // wolniej
       vsync: this,
     );
     _lineController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 400), // szybciej
       vsync: this,
     );
     _topBottomLineController = AnimationController(
-      duration: const Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 900), // wolniej
       vsync: this,
     );
 
@@ -58,12 +58,14 @@ class _VillageStep2State extends State<VillageStep2>
 
     Future.delayed(const Duration(milliseconds: 300), () {
       _titleController.forward().then((_) {
-        _lineController.forward();
-        _topBottomLineController.forward();
-        Future.delayed(const Duration(milliseconds: 300), () {
-          _descController.forward().then((_) {
-            Future.delayed(const Duration(milliseconds: 100), () {
-              _imageController.forward();
+        _lineController.forward().then((_) {
+          Future.delayed(const Duration(milliseconds: 200), () {
+            _descController.forward().then((_) {
+              Future.delayed(const Duration(milliseconds: 600), () {
+                // <- większa przerwa
+                _topBottomLineController.forward();
+                _imageController.forward();
+              });
             });
           });
         });
@@ -107,7 +109,7 @@ class _VillageStep2State extends State<VillageStep2>
                 child: Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: isMobile

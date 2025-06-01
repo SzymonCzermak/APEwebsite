@@ -18,26 +18,32 @@ class _VillageStep3State extends State<VillageStep3>
   late final AnimationController _descController;
   late final AnimationController _imageController;
   late final AnimationController _lineController;
+  late final AnimationController _topBottomLineController;
   late final Animation<double> _lineAnimation;
+  late final Animation<double> _topBottomLineAnimation;
 
   @override
   void initState() {
     super.initState();
 
     _titleController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 500), // szybciej
       vsync: this,
     );
     _descController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
     _imageController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 800), // wolniej
       vsync: this,
     );
     _lineController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 400), // szybciej
+      vsync: this,
+    );
+    _topBottomLineController = AnimationController(
+      duration: const Duration(milliseconds: 900), // wolniej
       vsync: this,
     );
 
@@ -46,13 +52,20 @@ class _VillageStep3State extends State<VillageStep3>
       curve: Curves.easeOutCubic,
     ));
 
+    _topBottomLineAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _topBottomLineController, curve: Curves.easeOut),
+    );
+
     Future.delayed(const Duration(milliseconds: 300), () {
       _titleController.forward().then((_) {
-        _lineController.forward();
-        Future.delayed(const Duration(milliseconds: 300), () {
-          _descController.forward().then((_) {
-            Future.delayed(const Duration(milliseconds: 400), () {
-              _imageController.forward();
+        _lineController.forward().then((_) {
+          Future.delayed(const Duration(milliseconds: 200), () {
+            _descController.forward().then((_) {
+              Future.delayed(const Duration(milliseconds: 600), () {
+                // <- większa przerwa
+                _topBottomLineController.forward();
+                _imageController.forward();
+              });
             });
           });
         });
@@ -66,6 +79,7 @@ class _VillageStep3State extends State<VillageStep3>
     _descController.dispose();
     _imageController.dispose();
     _lineController.dispose();
+    _topBottomLineController.dispose();
     super.dispose();
   }
 
@@ -86,47 +100,54 @@ class _VillageStep3State extends State<VillageStep3>
         padding: const EdgeInsets.all(16.0),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1500),
-          child: AspectRatio(
-            aspectRatio: isMobile ? 3 / 4 : 16 / 9,
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _AnimatedLine(animation: _topBottomLineAnimation, isTop: true),
+              AspectRatio(
+                aspectRatio: isMobile ? 3 / 4 : 16 / 9,
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: isMobile
+                      ? Column(
+                          children: [
+                            _AnimatedSlideFade(
+                              animation: _imageController,
+                              beginOffset: const Offset(0, 0.15),
+                              child: _buildImage(isMobile: isMobile),
+                            ),
+                            const SizedBox(height: 24),
+                            _buildText(titleFontSize, bodyFontSize, isPolish),
+                          ],
+                        )
+                      : Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: _AnimatedSlideFade(
+                                animation: _imageController,
+                                beginOffset: const Offset(0.15, 0),
+                                child: _buildImage(isMobile: isMobile),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 24.0),
+                                child: _buildText(
+                                    titleFontSize, bodyFontSize, isPolish),
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
               ),
-              child: isMobile
-                  ? Column(
-                      children: [
-                        _AnimatedSlideFade(
-                          animation: _imageController,
-                          beginOffset: const Offset(0, 0.15),
-                          child: _buildImage(isMobile: isMobile),
-                        ),
-                        const SizedBox(height: 24),
-                        _buildText(titleFontSize, bodyFontSize, isPolish),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: _AnimatedSlideFade(
-                            animation: _imageController,
-                            beginOffset: const Offset(0.15, 0),
-                            child: _buildImage(isMobile: isMobile),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 24.0),
-                            child: _buildText(
-                                titleFontSize, bodyFontSize, isPolish),
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
+              _AnimatedLine(animation: _topBottomLineAnimation, isTop: false),
+            ],
           ),
         ),
       ),
@@ -171,16 +192,24 @@ class _VillageStep3State extends State<VillageStep3>
                       offset: Offset(0, 10 * (1 - _lineAnimation.value)),
                       child: Container(
                         height: 2,
-                        width: 500,
-                        decoration: BoxDecoration(
-                          gradient:
-                              AppColors.getGradientForPage(PageType.village),
-                          borderRadius: BorderRadius.circular(1),
+                        width: 300,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              Color(0xFF000000), // czarny początek
+                              Color(0xFF8BC34A), // zieleń
+                              Color.fromARGB(255, 128, 94, 0), // brąz
+                              Color(0xFF000000), // czarny koniec
+                            ],
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(1)),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
+                              color: Colors.black54,
                               blurRadius: 4,
-                              offset: const Offset(0, 2),
+                              offset: Offset(0, 2),
                             ),
                           ],
                         ),
@@ -269,6 +298,63 @@ class _AnimatedSlideFade extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _AnimatedLine extends StatelessWidget {
+  final Animation<double> animation;
+  final bool isTop;
+
+  const _AnimatedLine({
+    required this.animation,
+    required this.isTop,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (_, __) => Opacity(
+        opacity: animation.value,
+        child: Transform.translate(
+          offset: Offset(0, (isTop ? -1 : 1) * 20 * (1 - animation.value)),
+          child: Container(
+            height: 4,
+            margin: const EdgeInsets.symmetric(vertical: 12),
+            width: 1200,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: isTop
+                    ? [
+                        const Color.fromARGB(255, 0, 0, 0),
+                        const Color(0xFF5A7F2E),
+                        const Color(0xFF8BC34A),
+                        const Color(0xFF5A7F2E),
+                        const Color.fromARGB(255, 0, 0, 0),
+                      ]
+                    : [
+                        const Color.fromARGB(255, 0, 0, 0),
+                        const Color(0xFF5E4300),
+                        const Color(0xFF805E00),
+                        const Color(0xFF5E4300),
+                        const Color.fromARGB(255, 0, 0, 0),
+                      ],
+              ),
+              borderRadius: BorderRadius.circular(1),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.9),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

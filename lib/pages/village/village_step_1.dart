@@ -98,7 +98,7 @@ class _VillageStep1State extends State<VillageStep1>
             child: Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Column(
@@ -162,10 +162,10 @@ class _VillageStep1State extends State<VillageStep1>
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 0),
                         Image.asset(
                           'assets/logos/logo_alverdorf.png',
-                          height: isMobile ? 60 : 150,
+                          height: isMobile ? 100 : 200,
                         ),
                       ],
                     ),
@@ -209,27 +209,43 @@ class _VillageStep1State extends State<VillageStep1>
                   ),
                   const SizedBox(height: 32),
                   _AnimatedFadeSlide(
-                    animation: _buttonController,
-                    offset: const Offset(0, 0.1),
-                    child: TextButton(
-                      onPressed: widget.onNext,
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 16, horizontal: 32),
-                        backgroundColor: const Color.fromARGB(255, 128, 94, 0),
-                        shape: RoundedRectangleBorder(
+                      animation: _buttonController,
+                      offset: const Offset(0, 0.1),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color.fromARGB(255, 128, 94, 0)
+                                  .withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(2, 4),
+                            ),
+                          ],
+                          border: Border.all(color: Colors.black, width: 1),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                      ),
-                      child: Text(
-                        isPolish ? 'Rozpocznij przygodę' : 'Start the journey',
-                        style: GoogleFonts.imFellEnglishSc(
-                          fontSize: bodyFontSize,
-                          color: Colors.white,
+                        child: TextButton(
+                          onPressed: widget.onNext,
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 16, horizontal: 32),
+                            backgroundColor:
+                                const Color.fromARGB(255, 128, 94, 0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            isPolish
+                                ? 'Rozpocznij przygodę'
+                                : 'Start the journey',
+                            style: GoogleFonts.imFellEnglishSc(
+                              fontSize: bodyFontSize,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
+                      )),
                   const SizedBox(height: 24),
                   _AnimatedFadeSlide(
                     animation: _logoQEventsController,
@@ -238,7 +254,7 @@ class _VillageStep1State extends State<VillageStep1>
                       opacity: 0.7,
                       child: Image.asset(
                         'assets/logos/logo_qevents.png',
-                        height: isMobile ? 30 : 100,
+                        height: isMobile ? 75 : 125,
                       ),
                     ),
                   ),

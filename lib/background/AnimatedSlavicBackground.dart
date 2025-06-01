@@ -35,8 +35,9 @@ class _AnimatedForestSpiritsState extends State<AnimatedForestSpirits>
         AnimationController(vsync: this, duration: const Duration(seconds: 12))
           ..repeat();
 
+    // Generuj pozycje w pikselach (domyślnie do dużego ekranu, np. 1920x1080)
     for (int i = 0; i < FIREFLY_COUNT; i++) {
-      _fireflies.add(_Firefly.random(_random));
+      _fireflies.add(_Firefly.random(_random, maxWidth: 1920, maxHeight: 1080));
     }
   }
 
@@ -62,7 +63,7 @@ class _AnimatedForestSpiritsState extends State<AnimatedForestSpirits>
 }
 
 class _Firefly {
-  Offset basePosition;
+  final Offset basePosition;
   final double radius;
   final double speed;
   final double offset;
@@ -78,9 +79,13 @@ class _Firefly {
     required this.shapeType,
   });
 
-  factory _Firefly.random(Random rand) {
+  factory _Firefly.random(Random rand,
+      {required double maxWidth, required double maxHeight}) {
     return _Firefly(
-      basePosition: Offset(rand.nextDouble(), rand.nextDouble()),
+      basePosition: Offset(
+        rand.nextDouble() * maxWidth,
+        rand.nextDouble() * maxHeight,
+      ),
       radius: rand.nextDouble() * 10 + 3,
       speed: rand.nextDouble() * 0.5 + 0.2,
       offset: rand.nextDouble() * 2 * pi,
@@ -110,8 +115,8 @@ class _ForestPainter extends CustomPainter {
         end: Alignment.bottomCenter,
         colors: [
           const Color.fromARGB(255, 0, 0, 0),
-          const Color(0xFF0F0C0A),
-          const Color(0xFF0C0908),
+          const Color.fromARGB(255, 14, 14, 14),
+          const Color.fromARGB(255, 0, 0, 0),
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
@@ -120,12 +125,12 @@ class _ForestPainter extends CustomPainter {
     final t = time * 2 * pi;
 
     for (final firefly in fireflies) {
-      final dx =
-          (firefly.basePosition.dx + 0.005 * sin(t + firefly.offset)) % 1.0;
-      final dy =
-          (firefly.basePosition.dy + 0.005 * cos(t + firefly.offset)) % 1.0;
+      final dx = firefly.basePosition.dx +
+          50 * sin(t * firefly.speed + firefly.offset);
+      final dy = firefly.basePosition.dy +
+          60 * cos(t * firefly.speed + firefly.offset);
 
-      final position = Offset(dx * size.width, dy * size.height);
+      final position = Offset(dx, dy);
       final flicker = 0.5 + 0.5 * sin(t + firefly.offset);
       final radius = firefly.radius * (0.8 + 0.2 * flicker);
 

@@ -184,8 +184,8 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                                           const Color.fromARGB(255, 22, 20, 20),
                                       accentColor:
                                           const Color.fromARGB(255, 61, 40, 26),
-                                      onTap: () => widget
-                                          .onTabSelected(PageType.village),
+                                      onTap: () => Navigator.pushNamed(
+                                          context, '/alverdorf'),
                                     ),
                                   ),
                                 ),

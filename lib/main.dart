@@ -53,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
     String route;
     switch (newPage) {
       case PageType.village:
-        route = '/wioska';
+        route = '/alverdorf';
         break;
       case PageType.tour:
         route = '/wycieczka';
