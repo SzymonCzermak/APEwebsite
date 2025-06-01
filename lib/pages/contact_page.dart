@@ -3,6 +3,7 @@ import 'package:apewebsite/widgets/custom_app_bar.dart';
 import 'package:apewebsite/models/page_type.dart';
 import 'package:provider/provider.dart';
 import 'package:apewebsite/language_controller.dart';
+import 'package:apewebsite/styles/color.dart.';
 
 class ContactPage extends StatelessWidget {
   const ContactPage({super.key});
@@ -20,10 +21,12 @@ class ContactPage extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.build_circle_outlined, size: 80, color: Colors.orangeAccent),
+              const Icon(Icons.mail, size: 80, color: Colors.orangeAccent),
               const SizedBox(height: 24),
               Text(
-                isPolish ? 'Strona kontaktowa w budowie' : 'Contact page under construction',
+                isPolish
+                    ? 'Strona kontaktowa w budowie'
+                    : 'Contact page under construction',
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,

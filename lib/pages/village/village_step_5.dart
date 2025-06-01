@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:apewebsite/language_controller.dart';
+import 'package:apewebsite/styles/color.dart';
+import 'package:apewebsite/models/page_type.dart';
 
 class VillageStep5 extends StatefulWidget {
   const VillageStep5({super.key});
@@ -15,10 +17,13 @@ class _VillageStep5State extends State<VillageStep5>
   late final AnimationController _titleController;
   late final AnimationController _descController;
   late final AnimationController _imageController;
+  late final AnimationController _lineController;
+  late final Animation<double> _lineAnimation;
 
   @override
   void initState() {
     super.initState();
+
     _titleController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -28,15 +33,27 @@ class _VillageStep5State extends State<VillageStep5>
       vsync: this,
     );
     _imageController = AnimationController(
-      duration: const Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _lineController = AnimationController(
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
 
-    _titleController.forward().then((_) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        _descController.forward().then((_) {
-          Future.delayed(const Duration(milliseconds: 800), () {
-            _imageController.forward();
+    _lineAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+      parent: _lineController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      _titleController.forward().then((_) {
+        _lineController.forward();
+        Future.delayed(const Duration(milliseconds: 300), () {
+          _descController.forward().then((_) {
+            Future.delayed(const Duration(milliseconds: 400), () {
+              _imageController.forward();
+            });
           });
         });
       });
@@ -48,6 +65,7 @@ class _VillageStep5State extends State<VillageStep5>
     _titleController.dispose();
     _descController.dispose();
     _imageController.dispose();
+    _lineController.dispose();
     super.dispose();
   }
 
@@ -94,7 +112,7 @@ class _VillageStep5State extends State<VillageStep5>
                           flex: 2,
                           child: _AnimatedSlideFade(
                             animation: _imageController,
-                            beginOffset: const Offset(0.15, 0),
+                            beginOffset: const Offset(-0.15, 0),
                             child: _buildImage(isMobile: isMobile),
                           ),
                         ),
@@ -123,20 +141,54 @@ class _VillageStep5State extends State<VillageStep5>
         _AnimatedSlideFade(
           animation: _titleController,
           beginOffset: const Offset(0, 0.2),
-          child: Text(
-            isPolish
-                ? 'Oprawa aktorska – animatorzy'
-                : 'Theatrical setting – animators',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.imFellEnglishSc(
-              fontSize: titleSize,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              shadows: const [
-                Shadow(
-                    blurRadius: 6, color: Colors.black87, offset: Offset(0, 2)),
-              ],
-            ),
+          child: Column(
+            children: [
+              Text(
+                isPolish
+                    ? 'Oprawa aktorska – animatorzy'
+                    : 'Theatrical setting – animators',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.imFellEnglishSc(
+                  fontSize: titleSize,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  shadows: const [
+                    Shadow(
+                        blurRadius: 6,
+                        color: Colors.black87,
+                        offset: Offset(0, 2)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 6),
+              AnimatedBuilder(
+                animation: _lineAnimation,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _lineAnimation.value,
+                    child: Transform.translate(
+                      offset: Offset(0, 10 * (1 - _lineAnimation.value)),
+                      child: Container(
+                        height: 2,
+                        width: 500,
+                        decoration: BoxDecoration(
+                          gradient:
+                              AppColors.getGradientForPage(PageType.village),
+                          borderRadius: BorderRadius.circular(1),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 16),
@@ -175,6 +227,7 @@ class _VillageStep5State extends State<VillageStep5>
             child: Image.asset(
               'assets/alverdorf_page/step/4.png',
               fit: BoxFit.cover,
+              filterQuality: FilterQuality.medium,
             ),
           ),
         ),

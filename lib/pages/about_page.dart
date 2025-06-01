@@ -20,7 +20,7 @@ class AboutPage extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.construction, size: 80, color: Colors.orangeAccent),
+              const Icon(Icons.info, size: 80, color: Colors.orangeAccent),
               const SizedBox(height: 24),
               Text(
                 isPolish ? 'Strona w budowie' : 'Page under construction',

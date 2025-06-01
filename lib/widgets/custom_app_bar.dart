@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/page_type.dart';
+import 'package:icons_plus/icons_plus.dart';
 import '../language_controller.dart';
+import 'package:apewebsite/styles/color.dart'; // poprawiony import
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PageType currentPage;
 
-  const CustomAppBar({
-    super.key,
-    required this.currentPage,
-  });
+  const CustomAppBar({super.key, required this.currentPage});
 
   @override
   Size get preferredSize => const Size.fromHeight(90);
@@ -17,6 +16,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final isPolish = context.watch<LanguageController>().isPolish;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 900;
 
     return Container(
       height: 90,
@@ -30,34 +31,76 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          // Lewa część
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildTab(context, 'Alverdorf', 'Alverdorf', PageType.village),
-              _buildDivider(),
-              _buildTab(context, 'Wycieczka', 'Tour', PageType.tour),
-              _buildDivider(),
-              _buildTab(context, 'Strona Główna', 'Home Page', PageType.home),
+              if (isMobile)
+                PopupMenuButton<PageType>(
+                  icon: const Icon(Icons.menu, color: Colors.white),
+                  color: Colors.black87,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  onSelected: (page) {
+                    Navigator.pushNamed(context, _routeFromPageType(page));
+                  },
+                  itemBuilder: (context) => [
+                    _buildMenuItem(context, PageType.home,
+                        isPolish ? 'Strona Główna' : 'Home Page', Icons.home),
+                    _buildMenuItem(context, PageType.village,
+                        isPolish ? 'Alverdorf' : 'Alverdorf', Icons.park),
+                    _buildMenuItem(context, PageType.tour,
+                        isPolish ? 'Wycieczka' : 'Tour', Icons.school),
+                    _buildMenuItem(context, PageType.about,
+                        isPolish ? 'O nas' : 'About', Icons.info),
+                    _buildMenuItem(context, PageType.contact,
+                        isPolish ? 'Kontakt' : 'Contact', Icons.mail),
+                  ],
+                )
+              else
+                Row(
+                  children: [
+                    _buildTab(
+                        context, 'Alverdorf', 'Alverdorf', PageType.village),
+                    _buildDivider(),
+                    _buildTab(context, 'Wycieczka', 'Tour', PageType.tour),
+                    _buildDivider(),
+                    _buildTab(
+                        context, 'Strona Główna', 'Home Page', PageType.home),
+                  ],
+                ),
+              if (!isMobile)
+                Row(
+                  children: [
+                    _buildTab(context, 'O nas', 'About', PageType.about),
+                    _buildDivider(),
+                    _buildTab(context, 'Kontakt', 'Contact', PageType.contact),
+                    const SizedBox(width: 16),
+                    _buildLangSwitcher(context, isMobile: false),
+                  ],
+                )
+              else
+                _buildLangSwitcher(context, isMobile: true),
             ],
           ),
+          _buildLogoButton(context, isMobile),
+        ],
+      ),
+    );
+  }
 
-          // Logo (możesz też dać jako button do /)
-          _buildLogoButton(context),
-
-          // Prawa część
-          Row(
-            children: [
-              _buildTab(context, 'O nas', 'About', PageType.about),
-              _buildDivider(),
-              _buildTab(context, 'Kontakt', 'Contact', PageType.contact),
-              const SizedBox(width: 16),
-              _buildLangSwitcher(context),
-            ],
-          ),
+  PopupMenuItem<PageType> _buildMenuItem(
+      BuildContext context, PageType page, String label, IconData icon) {
+    return PopupMenuItem<PageType>(
+      value: page,
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white70, size: 18),
+          const SizedBox(width: 8),
+          Text(label, style: const TextStyle(color: Colors.white)),
         ],
       ),
     );
@@ -71,6 +114,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   ) {
     final isPolish = context.watch<LanguageController>().isPolish;
     final isSelected = currentPage == pageType;
+    final gradient = AppColors.getGradientForPage(pageType);
+    final mainColor = AppColors.getColorForPage(pageType);
 
     IconData icon;
     IconData iconOutlined;
@@ -107,7 +152,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               Icon(
                 isSelected ? icon : iconOutlined,
                 color: isSelected
-                    ? const Color.fromARGB(195, 255, 193, 7)
+                    ? mainColor
                     : const Color.fromARGB(255, 180, 180, 180),
                 size: 18,
               ),
@@ -116,7 +161,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 isPolish ? pl : en,
                 style: TextStyle(
                   color: isSelected
-                      ? Colors.amber
+                      ? mainColor
                       : const Color.fromARGB(255, 181, 180, 180),
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w400,
                   fontSize: 15,
@@ -125,8 +170,21 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ],
           ),
           const SizedBox(height: 6),
-          _buildUnderline(isSelected),
+          _buildUnderline(isSelected, gradient),
         ],
+      ),
+    );
+  }
+
+  Widget _buildUnderline(bool isSelected, LinearGradient gradient) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOutCubic,
+      height: 3,
+      width: isSelected ? 40 : 0,
+      decoration: BoxDecoration(
+        gradient: isSelected ? gradient : null,
+        borderRadius: BorderRadius.circular(1),
       ),
     );
   }
@@ -134,55 +192,38 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget _buildDivider() {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Text(
-        '|',
-        style: TextStyle(color: Colors.white54, fontSize: 24),
-      ),
+      child: Text('|', style: TextStyle(color: Colors.white54, fontSize: 24)),
     );
   }
 
-  Widget _buildUnderline(bool isSelected) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOutCubic,
-      height: 3,
-      width: isSelected ? 40 : 0,
-      decoration: BoxDecoration(
-        gradient: isSelected
-            ? const LinearGradient(
-                colors: [Colors.amber, Colors.orangeAccent],
-              )
-            : null,
-        borderRadius: BorderRadius.circular(1),
-      ),
-    );
-  }
-
-  Widget _buildLangSwitcher(BuildContext context) {
+  Widget _buildLangSwitcher(BuildContext context, {required bool isMobile}) {
     final controller = context.read<LanguageController>();
     final isPolish = controller.isPolish;
 
     return Container(
+      margin: const EdgeInsets.only(left: 8),
       decoration: BoxDecoration(
         color: Colors.white10,
         borderRadius: BorderRadius.circular(30),
         border: Border.all(color: Colors.white24),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 4 : 6, vertical: 2),
       child: Row(
         children: [
           InkWell(
             onTap: () => controller.setLanguage(true),
             borderRadius: BorderRadius.circular(30),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: EdgeInsets.symmetric(
+                  horizontal: isMobile ? 6 : 10, vertical: 4),
               decoration: BoxDecoration(
                 color: isPolish ? Colors.amber : Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Text(
-                'PL',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              child: SizedBox(
+                width: isMobile ? 24 : 30,
+                height: isMobile ? 16 : 20,
+                child: Flag(Flags.poland),
               ),
             ),
           ),
@@ -190,14 +231,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             onTap: () => controller.setLanguage(false),
             borderRadius: BorderRadius.circular(30),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: EdgeInsets.symmetric(
+                  horizontal: isMobile ? 6 : 10, vertical: 4),
               decoration: BoxDecoration(
                 color: !isPolish ? Colors.amber : Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Text(
-                'ENG',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              child: SizedBox(
+                width: isMobile ? 24 : 30,
+                height: isMobile ? 16 : 20,
+                child: Flag(Flags.united_kingdom),
               ),
             ),
           ),
@@ -206,17 +249,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget _buildLogoButton(BuildContext context) {
-  return GestureDetector(
-    onTap: () => Navigator.pushNamed(context, '/'),
-    child: Image.asset(
-      'assets/logos/logo_ap.png',
-      height: 45,
-      fit: BoxFit.contain,
-    ),
-  );
-}
-
+  Widget _buildLogoButton(BuildContext context, bool isMobile) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, '/'),
+      child: Image.asset(
+        'assets/logos/logo_ap.png',
+        height: isMobile ? 38 : 45,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
 
   String _routeFromPageType(PageType page) {
     switch (page) {

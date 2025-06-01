@@ -2,6 +2,8 @@ import 'package:apewebsite/language_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:apewebsite/styles/color.dart';
+import 'package:apewebsite/models/page_type.dart';
 
 class VillageStep2 extends StatefulWidget {
   const VillageStep2({super.key});
@@ -15,10 +17,15 @@ class _VillageStep2State extends State<VillageStep2>
   late final AnimationController _titleController;
   late final AnimationController _descController;
   late final AnimationController _imageController;
+  late final AnimationController _lineController;
+  late final AnimationController _topBottomLineController;
+  late final Animation<double> _lineAnimation;
+  late final Animation<double> _topBottomLineAnimation;
 
   @override
   void initState() {
     super.initState();
+
     _titleController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -28,15 +35,36 @@ class _VillageStep2State extends State<VillageStep2>
       vsync: this,
     );
     _imageController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _lineController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _topBottomLineController = AnimationController(
       duration: const Duration(milliseconds: 700),
       vsync: this,
     );
 
-    _titleController.forward().then((_) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        _descController.forward().then((_) {
-          Future.delayed(const Duration(milliseconds: 800), () {
-            _imageController.forward();
+    _lineAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+      parent: _lineController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _topBottomLineAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _topBottomLineController, curve: Curves.easeOut),
+    );
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      _titleController.forward().then((_) {
+        _lineController.forward();
+        _topBottomLineController.forward();
+        Future.delayed(const Duration(milliseconds: 300), () {
+          _descController.forward().then((_) {
+            Future.delayed(const Duration(milliseconds: 100), () {
+              _imageController.forward();
+            });
           });
         });
       });
@@ -48,6 +76,8 @@ class _VillageStep2State extends State<VillageStep2>
     _titleController.dispose();
     _descController.dispose();
     _imageController.dispose();
+    _lineController.dispose();
+    _topBottomLineController.dispose();
     super.dispose();
   }
 
@@ -68,47 +98,54 @@ class _VillageStep2State extends State<VillageStep2>
         padding: const EdgeInsets.all(16.0),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1500),
-          child: AspectRatio(
-            aspectRatio: isMobile ? 3 / 4 : 16 / 9,
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _AnimatedLine(animation: _topBottomLineAnimation, isTop: true),
+              AspectRatio(
+                aspectRatio: isMobile ? 3 / 4 : 16 / 9,
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: isMobile
+                      ? Column(
+                          children: [
+                            _buildText(titleFontSize, bodyFontSize, isPolish),
+                            const SizedBox(height: 24),
+                            _AnimatedSlideFade(
+                              animation: _imageController,
+                              beginOffset: const Offset(0, 0.15),
+                              child: _buildImage(isMobile: isMobile),
+                            ),
+                          ],
+                        )
+                      : Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 24.0),
+                                child: _buildText(
+                                    titleFontSize, bodyFontSize, isPolish),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: _AnimatedSlideFade(
+                                animation: _imageController,
+                                beginOffset: const Offset(0.15, 0),
+                                child: _buildImage(isMobile: isMobile),
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
               ),
-              child: isMobile
-                  ? Column(
-                      children: [
-                        _buildText(titleFontSize, bodyFontSize, isPolish),
-                        const SizedBox(height: 24),
-                        _AnimatedSlideFade(
-                          animation: _imageController,
-                          beginOffset: const Offset(0, 0.15),
-                          child: _buildImage(isMobile: isMobile),
-                        ),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 24.0),
-                            child: _buildText(
-                                titleFontSize, bodyFontSize, isPolish),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: _AnimatedSlideFade(
-                            animation: _imageController,
-                            beginOffset: const Offset(0.15, 0),
-                            child: _buildImage(isMobile: isMobile),
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
+              _AnimatedLine(animation: _topBottomLineAnimation, isTop: false),
+            ],
           ),
         ),
       ),
@@ -123,21 +160,61 @@ class _VillageStep2State extends State<VillageStep2>
         _AnimatedSlideFade(
           animation: _titleController,
           beginOffset: const Offset(0, 0.2),
-          child: Text(
-            isPolish ? 'Czym jest Alverdorf?' : 'What is Alverdorf?',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.imFellEnglishSc(
-              fontSize: titleSize,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              shadows: const [
-                Shadow(
-                  blurRadius: 6,
-                  color: Colors.black,
-                  offset: Offset(0, 2),
+          child: Column(
+            children: [
+              Text(
+                isPolish ? 'Czym jest Alverdorf?' : 'What is Alverdorf?',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.imFellEnglishSc(
+                  fontSize: titleSize,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  shadows: const [
+                    Shadow(
+                      blurRadius: 6,
+                      color: Colors.black,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 6),
+              AnimatedBuilder(
+                animation: _lineAnimation,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _lineAnimation.value,
+                    child: Transform.translate(
+                      offset: Offset(0, 10 * (1 - _lineAnimation.value)),
+                      child: Container(
+                        height: 2,
+                        width: 300,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              Color(0xFF000000), // czarny początek
+                              Color(0xFF8BC34A), // zieleń
+                              Color.fromARGB(255, 128, 94, 0), // brąz
+                              Color(0xFF000000), // czarny koniec
+                            ],
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(1)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black54,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 16),
@@ -217,6 +294,68 @@ class _AnimatedSlideFade extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _AnimatedLine extends StatelessWidget {
+  final Animation<double> animation;
+  final bool isTop;
+
+  const _AnimatedLine({
+    required this.animation,
+    required this.isTop,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (_, __) => Opacity(
+        opacity: animation.value,
+        child: Transform.translate(
+          offset: Offset(0, (isTop ? -1 : 1) * 20 * (1 - animation.value)),
+          child: Container(
+            height: 4,
+            margin: const EdgeInsets.symmetric(vertical: 12),
+            width: 1200,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: isTop
+                    ? [
+                        const Color.fromARGB(
+                            255, 0, 0, 0), // ciemniejszy zielony bok
+                        const Color(0xFF5A7F2E), // ciemniejszy zielony bok
+                        const Color(0xFF8BC34A), // główny zielony
+                        const Color(0xFF5A7F2E), // ciemniejszy zielony bok
+                        const Color.fromARGB(
+                            255, 0, 0, 0), // ciemniejszy zielony bok
+                      ]
+                    : [
+                        const Color.fromARGB(
+                            255, 0, 0, 0), // ciemniejszy zielony bok
+
+                        const Color(0xFF5E4300), // ciemniejszy brązowy bok
+                        const Color(0xFF805E00), // główny brązowy
+                        const Color(0xFF5E4300), // ciemniejszy brązowy bok
+                        const Color.fromARGB(
+                            255, 0, 0, 0), // ciemniejszy zielony bok
+                      ],
+              ),
+              borderRadius: BorderRadius.circular(1),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.9),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
