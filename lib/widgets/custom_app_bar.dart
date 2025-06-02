@@ -4,11 +4,25 @@ import '../models/page_type.dart';
 import 'package:icons_plus/icons_plus.dart';
 import '../language_controller.dart';
 import 'package:apewebsite/styles/color.dart'; // poprawiony import
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PageType currentPage;
 
   const CustomAppBar({super.key, required this.currentPage});
+
+  static const _bookeroUrl =
+      'https://alverniaplanet.bookero.pl/?gad_source=1&gad_campaignid=21184439646&gbraid=0AAAAACpnbKKuCOIqtNpPzqLUV020lKRu1&gclid=Cj0KCQjw9O_BBhCUARIsAHQMjS6El7Cv2TVWHD-yBMFAlW3vA1OrWT9Llg3aYSE6DldTCTv3AUWbFG4aAqKNEALw_wcB';
+
+  Future<void> _launchBookero() async {
+  final uri = Uri.parse(_bookeroUrl);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  } else {
+    debugPrint('Could not launch $_bookeroUrl');
+  }
+}
+
 
   @override
   Size get preferredSize => const Size.fromHeight(90);
@@ -39,49 +53,94 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (isMobile)
-                PopupMenuButton<PageType>(
-                  icon: const Icon(Icons.menu, color: Colors.white),
-                  color: Colors.black87,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  onSelected: (page) {
-                    Navigator.pushNamed(context, _routeFromPageType(page));
-                  },
-                  itemBuilder: (context) => [
-                    _buildMenuItem(context, PageType.home,
-                        isPolish ? 'Strona Główna' : 'Home Page', Icons.home),
-                    _buildMenuItem(context, PageType.village,
-                        isPolish ? 'Alverdorf' : 'Alverdorf', Icons.park),
-                    _buildMenuItem(context, PageType.tour,
-                        isPolish ? 'Wycieczka' : 'Tour', Icons.school),
-                    _buildMenuItem(context, PageType.about,
-                        isPolish ? 'O nas' : 'About', Icons.info),
-                    _buildMenuItem(context, PageType.contact,
-                        isPolish ? 'Kontakt' : 'Contact', Icons.mail),
-                  ],
-                )
+                PopupMenuButton<String>(
+  icon: const Icon(Icons.menu, color: Colors.white),
+  color: Colors.black87,
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  onSelected: (value) {
+    if (value == 'bookero') {
+      _launchBookero();
+    } else {
+      Navigator.pushNamed(context, _routeFromPageType(PageType.values.firstWhere((e) => e.name == value)));
+    }
+  },
+  itemBuilder: (context) => [
+    _buildMenuItem(context, PageType.home, isPolish ? 'Strona Główna' : 'Home Page', Icons.home),
+    _buildMenuItem(context, PageType.village, isPolish ? 'Alverdorf' : 'Alverdorf', Icons.park),
+    _buildMenuItem(context, PageType.tour, isPolish ? 'Wycieczka' : 'Tour', Icons.school),
+    _buildMenuItem(context, PageType.about, isPolish ? 'O nas' : 'About', Icons.info),
+    _buildMenuItem(context, PageType.contact, isPolish ? 'Kontakt' : 'Contact', Icons.mail),
+    PopupMenuItem<String>(
+      value: 'bookero',
+      child: Row(
+        children: [
+          const Icon(Icons.calendar_month_rounded, color: Colors.amber, size: 18),
+          const SizedBox(width: 8),
+          const Text('Rezerwacja', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    ),
+  ],
+)
               else
                 Row(
                   children: [
-                    _buildTab(
-                        context, 'Alverdorf', 'Alverdorf', PageType.village),
+                    _buildTab(context, 'Alverdorf', 'Alverdorf', PageType.village),
                     _buildDivider(),
                     _buildTab(context, 'Wycieczka', 'Tour', PageType.tour),
                     _buildDivider(),
-                    _buildTab(
-                        context, 'Strona Główna', 'Home Page', PageType.home),
+                    _buildTab(context, 'Strona Główna', 'Home Page', PageType.home),
                   ],
                 ),
               if (!isMobile)
                 Row(
-                  children: [
-                    _buildTab(context, 'O nas', 'About', PageType.about),
-                    _buildDivider(),
-                    _buildTab(context, 'Kontakt', 'Contact', PageType.contact),
-                    const SizedBox(width: 16),
-                    _buildLangSwitcher(context, isMobile: false),
-                  ],
-                )
+  children: [
+    _buildTab(context, 'O nas', 'About', PageType.about),
+    _buildDivider(),
+    _buildTab(context, 'Kontakt', 'Contact', PageType.contact),
+    const SizedBox(width: 16),
+    // Przycisk Rezerwacja z tłumaczeniem, obramowaniem i cieniem
+    InkWell(
+      onTap: _launchBookero,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.amber, // Żółte tło jak podkreślenie
+          borderRadius: BorderRadius.circular(35),
+          border: Border.all(color: const Color.fromARGB(255, 117, 87, 0), width: 2), // Obramowanie
+          boxShadow: [ // Subtelny cień
+            BoxShadow(
+              color: const Color.fromARGB(255, 67, 50, 0),
+              offset: const Offset(0, 3),
+              blurRadius: 6,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.calendar_month_rounded,
+                color: Colors.black87, size: 16),
+            const SizedBox(width: 4),
+            Text(
+              context.watch<LanguageController>().isPolish
+                  ? 'Rezerwacja'
+                  : 'Booking',
+              style: const TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+    const SizedBox(width: 16),
+    _buildLangSwitcher(context, isMobile: false),
+  ],
+)
+
               else
                 _buildLangSwitcher(context, isMobile: true),
             ],
@@ -92,10 +151,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  PopupMenuItem<PageType> _buildMenuItem(
+  PopupMenuItem<String> _buildMenuItem(
       BuildContext context, PageType page, String label, IconData icon) {
-    return PopupMenuItem<PageType>(
-      value: page,
+    return PopupMenuItem<String>(
+      value: page.name,
       child: Row(
         children: [
           Icon(icon, color: Colors.white70, size: 18),

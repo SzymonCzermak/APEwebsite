@@ -25,36 +25,38 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _pages = [
-  HomeStep1(
-    onTabSelected: widget.onTabSelected ?? (page) {},
-  ),
-];
-
+      HomeStep1(
+        onTabSelected: widget.onTabSelected ?? (page) {},
+      ),
+      // Dodaj kolejne kroki jeśli masz więcej podstron, np.:
+      // HomeStep2(),
+      // HomeStep3(),
+    ];
   }
 
   void _handleScroll(double delta, {required bool isMouse}) async {
     if (!isScrolling) {
+      final int page = _pageController.hasClients ? _pageController.page?.round() ?? 0 : 0;
+      final int lastPage = _pages.length - 1;
+
+      // Kierunek przewijania
+      final bool goNext = isMouse ? delta > 0 : delta < 0;
+      final bool goPrev = isMouse ? delta < 0 : delta > 0;
+
+      // Sprawdź czy można przewijać dalej!
+      if ((goNext && page >= lastPage) || (goPrev && page <= 0)) {
+        return; // nie rób nic, jesteś na końcu/początku
+      }
+
       isScrolling = true;
-      if (isMouse) {
-        if (delta > 0) {
-          await _pageController.nextPage(
-              duration: const Duration(milliseconds: 700),
-              curve: Curves.easeInOut);
-        } else {
-          await _pageController.previousPage(
-              duration: const Duration(milliseconds: 700),
-              curve: Curves.easeInOut);
-        }
+      if (goNext) {
+        await _pageController.nextPage(
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.easeInOut);
       } else {
-        if (delta < 0) {
-          await _pageController.nextPage(
-              duration: const Duration(milliseconds: 700),
-              curve: Curves.easeInOut);
-        } else {
-          await _pageController.previousPage(
-              duration: const Duration(milliseconds: 700),
-              curve: Curves.easeInOut);
-        }
+        await _pageController.previousPage(
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.easeInOut);
       }
       await Future.delayed(const Duration(milliseconds: 550));
       isScrolling = false;
@@ -72,7 +74,10 @@ class _HomePageState extends State<HomePage> {
             child: Listener(
               onPointerSignal: (pointerSignal) {
                 if (pointerSignal is PointerScrollEvent) {
-                  _handleScroll(pointerSignal.scrollDelta.dy, isMouse: true);
+                  // Reaguj tylko na przewijanie w pionie, ignoruj poziome scrollowanie
+                  if (pointerSignal.scrollDelta.dy.abs() > pointerSignal.scrollDelta.dx.abs()) {
+                    _handleScroll(pointerSignal.scrollDelta.dy, isMouse: true);
+                  }
                 }
               },
               child: PageView.builder(

@@ -3,7 +3,7 @@ import 'package:apewebsite/widgets/custom_app_bar.dart';
 import 'package:apewebsite/models/page_type.dart';
 import 'package:provider/provider.dart';
 import 'package:apewebsite/language_controller.dart';
-import 'package:apewebsite/styles/color.dart.';
+import 'package:apewebsite/styles/color.dart';
 
 class ContactPage extends StatelessWidget {
   const ContactPage({super.key});

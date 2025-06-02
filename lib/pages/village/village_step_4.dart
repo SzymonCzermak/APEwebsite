@@ -27,7 +27,7 @@ class _VillageStep4State extends State<VillageStep4>
     super.initState();
 
     _titleController = AnimationController(
-      duration: const Duration(milliseconds: 500), // szybciej
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
     _descController = AnimationController(
@@ -35,15 +35,15 @@ class _VillageStep4State extends State<VillageStep4>
       vsync: this,
     );
     _imageController = AnimationController(
-      duration: const Duration(milliseconds: 800), // wolniej
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
     _lineController = AnimationController(
-      duration: const Duration(milliseconds: 400), // szybciej
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     );
     _topBottomLineController = AnimationController(
-      duration: const Duration(milliseconds: 900), // wolniej
+      duration: const Duration(milliseconds: 900),
       vsync: this,
     );
 
@@ -62,7 +62,6 @@ class _VillageStep4State extends State<VillageStep4>
           Future.delayed(const Duration(milliseconds: 200), () {
             _descController.forward().then((_) {
               Future.delayed(const Duration(milliseconds: 600), () {
-                // <- większa przerwa
                 _topBottomLineController.forward();
                 _imageController.forward();
               });
@@ -89,8 +88,7 @@ class _VillageStep4State extends State<VillageStep4>
     final isMobile = screenWidth < 750;
     final isPolish = context.watch<LanguageController>().isPolish;
     final screenHeight = MediaQuery.of(context).size.height;
-    final shortestSide =
-        screenWidth < screenHeight ? screenWidth : screenHeight;
+    final shortestSide = screenWidth < screenHeight ? screenWidth : screenHeight;
 
     final titleFontSize = shortestSide.clamp(280, 800) * 0.045;
     final bodyFontSize = shortestSide.clamp(280, 800) * 0.025;
@@ -99,14 +97,13 @@ class _VillageStep4State extends State<VillageStep4>
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1500),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _AnimatedLine(animation: _topBottomLineAnimation, isTop: true),
-              AspectRatio(
-                aspectRatio: isMobile ? 3 / 4 : 16 / 9,
-                child: Container(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _AnimatedLine(animation: _topBottomLineAnimation, isTop: true),
+                Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.2),
@@ -114,6 +111,7 @@ class _VillageStep4State extends State<VillageStep4>
                   ),
                   child: isMobile
                       ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             _AnimatedSlideFade(
                               animation: _imageController,
@@ -125,6 +123,7 @@ class _VillageStep4State extends State<VillageStep4>
                           ],
                         )
                       : Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Expanded(
                               flex: 3,
@@ -145,9 +144,9 @@ class _VillageStep4State extends State<VillageStep4>
                           ],
                         ),
                 ),
-              ),
-              _AnimatedLine(animation: _topBottomLineAnimation, isTop: false),
-            ],
+                _AnimatedLine(animation: _topBottomLineAnimation, isTop: false),
+              ],
+            ),
           ),
         ),
       ),
@@ -249,7 +248,6 @@ class _VillageStep4State extends State<VillageStep4>
     return Center(
       child: SizedBox(
         width: isMobile ? 180 : 320,
-        height: isMobile ? 280 : null,
         child: AspectRatio(
           aspectRatio: 9 / 16,
           child: ClipRRect(

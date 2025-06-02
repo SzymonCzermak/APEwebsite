@@ -84,75 +84,76 @@ class _VillageStep2State extends State<VillageStep2>
   }
 
   @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 750;
-    final isPolish = context.watch<LanguageController>().isPolish;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final shortestSide =
-        screenWidth < screenHeight ? screenWidth : screenHeight;
+Widget build(BuildContext context) {
+  final screenWidth = MediaQuery.of(context).size.width;
+  final isMobile = screenWidth < 750;
+  final isPolish = context.watch<LanguageController>().isPolish;
+  final screenHeight = MediaQuery.of(context).size.height;
+  final shortestSide = screenWidth < screenHeight ? screenWidth : screenHeight;
 
-    final titleFontSize = shortestSide.clamp(280, 800) * 0.045;
-    final bodyFontSize = shortestSide.clamp(280, 800) * 0.025;
+  final titleFontSize = shortestSide.clamp(280, 800) * 0.045;
+  final bodyFontSize = shortestSide.clamp(280, 800) * 0.025;
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1500),
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 900),
+        child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               _AnimatedLine(animation: _topBottomLineAnimation, isTop: true),
-              AspectRatio(
-                aspectRatio: isMobile ? 3 / 4 : 16 / 9,
-                child: Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: isMobile
-                      ? Column(
-                          children: [
-                            _buildText(titleFontSize, bodyFontSize, isPolish),
-                            const SizedBox(height: 24),
-                            _AnimatedSlideFade(
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: isMobile
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _buildText(titleFontSize, bodyFontSize, isPolish),
+                          const SizedBox(height: 24),
+                          _AnimatedSlideFade(
+                            animation: _imageController,
+                            beginOffset: const Offset(0, 0.15),
+                            child: _buildImage(isMobile: isMobile),
+                          ),
+                        ],
+                      )
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 24.0),
+                              child: _buildText(
+                                  titleFontSize, bodyFontSize, isPolish),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: _AnimatedSlideFade(
                               animation: _imageController,
-                              beginOffset: const Offset(0, 0.15),
+                              beginOffset: const Offset(0.15, 0),
                               child: _buildImage(isMobile: isMobile),
                             ),
-                          ],
-                        )
-                      : Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 24.0),
-                                child: _buildText(
-                                    titleFontSize, bodyFontSize, isPolish),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: _AnimatedSlideFade(
-                                animation: _imageController,
-                                beginOffset: const Offset(0.15, 0),
-                                child: _buildImage(isMobile: isMobile),
-                              ),
-                            ),
-                          ],
-                        ),
-                ),
+                          ),
+                        ],
+                      ),
               ),
               _AnimatedLine(animation: _topBottomLineAnimation, isTop: false),
             ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildText(double titleSize, double bodySize, bool isPolish) {
     return Column(

@@ -72,129 +72,143 @@ class _FooterVillageState extends State<FooterVillage>
   }
 
   @override
-  Widget build(BuildContext context) {
-    final isPolish = context.watch<LanguageController>().isPolish;
-    final screenSize = MediaQuery.of(context).size;
-    final screenWidth = screenSize.width;
-    final screenHeight = screenSize.height;
-    final isMobile = screenWidth < 600;
+Widget build(BuildContext context) {
+  final isPolish = context.watch<LanguageController>().isPolish;
+  final screenSize = MediaQuery.of(context).size;
+  final screenWidth = screenSize.width;
+  final screenHeight = screenSize.height;
+  final isMobile = screenWidth < 600;
 
-    final double contentMaxWidth =
-        screenWidth > 1400 ? 1400 : screenWidth * 0.95;
-    final double iframeMaxWidth =
-        isMobile ? screenWidth * 0.95 : screenWidth * 0.9;
-    final double iframeHeight =
-        isMobile ? screenHeight * 0.65 : (iframeMaxWidth / 16) * 9;
+  final double contentMaxWidth = screenWidth > 1400 ? 1400 : screenWidth * 0.97;
+  // ile pikseli potrzebujemy na tytuł, odstępy, button itp. (mniej więcej)
+  final double reservedHeightForOtherWidgets =
+      (isMobile ? 80 : 120) + 24 + 24 + 70 + 60; // title+gaps+button+padding
+  // niech iframe nie przekracza 60% ekranu na mobile, 65% na desktop, i max 500-600 px
+  final double iframeMaxHeight =
+      (screenHeight - reservedHeightForOtherWidgets).clamp(
+        isMobile ? 180.0 : 260.0,
+        isMobile ? screenHeight * 0.62 : 500.0,
+      );
+  final double iframeMaxWidth = contentMaxWidth;
+  final double iframeAspect = 16 / 9;
+  final double iframeTargetWidth = isMobile
+      ? iframeMaxWidth
+      : iframeMaxWidth > iframeMaxHeight * iframeAspect
+          ? iframeMaxHeight * iframeAspect
+          : iframeMaxWidth;
+  final double iframeTargetHeight = isMobile
+      ? iframeMaxHeight
+      : iframeTargetWidth / iframeAspect;
 
-    final double titleFontSize = isMobile ? 22 : 32;
-    final double buttonFontSize = isMobile ? 14 : 18;
+  final double titleFontSize = isMobile ? 22 : 32;
+  final double buttonFontSize = isMobile ? 14 : 18;
 
-    return SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
-        alignment: Alignment.center,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: contentMaxWidth),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _AnimatedSlideFade(
-                animation: _titleController,
-                beginOffset: const Offset(0, 0.2),
-                child: Text(
-                  isPolish
-                      ? 'Wkrocz do świata baśni i legend'
-                      : 'Step into a world of fairy tales and legends',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.imFellEnglishSc(
-                    fontSize: titleFontSize,
-                    color: Colors.white,
-                    height: 1.3,
-                    letterSpacing: 1.5,
-                    shadows: const [
-                      Shadow(
-                        blurRadius: 12,
-                        color: Colors.black87,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              _AnimatedSlideFade(
-                animation: _iframeController,
-                beginOffset: const Offset(0, 0.15),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    width: iframeMaxWidth,
-                    height: iframeHeight,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 12,
-                          spreadRadius: 2,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
+  return SingleChildScrollView(
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
+      alignment: Alignment.center,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: contentMaxWidth),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _AnimatedSlideFade(
+              animation: _titleController,
+              beginOffset: const Offset(0, 0.2),
+              child: Text(
+                isPolish
+                    ? 'Wkrocz do świata baśni i legend'
+                    : 'Step into a world of fairy tales and legends',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.imFellEnglishSc(
+                  fontSize: titleFontSize,
+                  color: Colors.white,
+                  height: 1.3,
+                  letterSpacing: 1.5,
+                  shadows: const [
+                    Shadow(
+                      blurRadius: 12,
+                      color: Colors.black87,
+                      offset: Offset(0, 3),
                     ),
-                    child: const HtmlElementView(viewType: 'bookero-iframe'),
-                  ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 24),
-              _AnimatedSlideFade(
-                animation: _buttonController,
-                beginOffset: const Offset(0, 0.15),
+            ),
+            const SizedBox(height: 24),
+            _AnimatedSlideFade(
+              animation: _iframeController,
+              beginOffset: const Offset(0, 0.15),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
                 child: Container(
+                  width: iframeTargetWidth,
+                  height: iframeTargetHeight,
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.6),
-                        blurRadius: 8,
-                        offset: const Offset(2, 4),
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                        offset: const Offset(0, 6),
                       ),
                     ],
-                    border: Border.all(color: Colors.black, width: 1),
-                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: TextButton.icon(
-                    onPressed: () {
-                      html.window
-                          .open('https://alverniaplanet.bookero.pl/', '_blank');
-                    },
-                    icon: const Icon(
-                      Icons.calendar_month,
+                  child: const HtmlElementView(viewType: 'bookero-iframe'),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            _AnimatedSlideFade(
+              animation: _buttonController,
+              beginOffset: const Offset(0, 0.15),
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.6),
+                      blurRadius: 8,
+                      offset: const Offset(2, 4),
+                    ),
+                  ],
+                  border: Border.all(color: Colors.black, width: 1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextButton.icon(
+                  onPressed: () {
+                    html.window.open('https://alverniaplanet.bookero.pl/', '_blank');
+                  },
+                  icon: const Icon(
+                    Icons.calendar_month,
+                    color: Colors.white,
+                  ),
+                  label: Text(
+                    isPolish ? 'Przejdź do rezerwacji' : 'Go to reservation',
+                    style: GoogleFonts.imFellEnglishSc(
+                      fontSize: buttonFontSize,
                       color: Colors.white,
                     ),
-                    label: Text(
-                      isPolish ? 'Przejdź do rezerwacji' : 'Go to reservation',
-                      style: GoogleFonts.imFellEnglishSc(
-                        fontSize: buttonFontSize,
-                        color: Colors.white,
-                      ),
-                    ),
-                    style: TextButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 128, 94, 0),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 16, horizontal: 32),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                  ),
+                  style: TextButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 128, 94, 0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 32),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 2),
-            ],
-          ),
+            ),
+            const SizedBox(height: 2),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
 
 class _AnimatedSlideFade extends StatelessWidget {
