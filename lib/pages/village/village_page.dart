@@ -1,4 +1,3 @@
-import 'package:apewebsite/pages/village/VillageStepContainer.dart';
 import 'package:apewebsite/pages/village/village_step_1.dart';
 import 'package:apewebsite/pages/village/village_step_2.dart';
 import 'package:apewebsite/pages/village/village_step_3.dart';
@@ -6,6 +5,7 @@ import 'package:apewebsite/pages/village/village_step_4.dart';
 import 'package:apewebsite/pages/village/village_step_5.dart';
 import 'package:apewebsite/pages/village/footer_village.dart';
 import 'package:apewebsite/background/AnimatedSlavicBackground.dart';
+import 'package:apewebsite/pages/village/village_step_6.dart';
 import 'package:apewebsite/widgets/custom_app_bar.dart';
 import 'package:apewebsite/models/page_type.dart';
 import 'package:flutter/material.dart';
@@ -29,55 +29,56 @@ class _VillagePageState extends State<VillagePage> {
   void initState() {
     super.initState();
     _pages = [
-      VillageStepContainer(child: VillageStep1(onNext: _scrollToNextPage)),
-      const VillageStepContainer(child: VillageStep2()),
-      const VillageStepContainer(child: VillageStep3()),
-      const VillageStepContainer(child: VillageStep4()),
-      const VillageStepContainer(child: VillageStep5()),
-      const VillageStepContainer(child: FooterVillage()),
+      VillageStep1(onNext: _scrollToNextPage),
+      const VillageStep2(),
+      const VillageStep3(),
+      const VillageStep4(),
+      const VillageStep5(),
+      const FooterVillage(),
+
     ];
   }
 
   void _handleScroll(double delta, {required bool isMouse}) async {
     if (!isScrolling) {
-      final int page = _pageController.hasClients ? _pageController.page?.round() ?? 0 : 0;
-      final int lastPage = _pages.length - 1;
-
-      // Kierunek przewijania
-      final bool goNext = isMouse ? delta > 0 : delta < 0;
-      final bool goPrev = isMouse ? delta < 0 : delta > 0;
-
-      // Sprawdź, czy można przewijać dalej!
-      if ((goNext && page >= lastPage) || (goPrev && page <= 0)) {
-        return; // nie rób nic, jesteś na końcu/początku
-      }
-
       isScrolling = true;
-      if (goNext) {
-        await _pageController.nextPage(
-          duration: const Duration(milliseconds: 700),
-          curve: Curves.easeInOut,
-        );
+
+      if (isMouse) {
+        if (delta > 0) {
+          await _pageController.nextPage(
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.easeInOut,
+          );
+        } else if (delta < 0) {
+          await _pageController.previousPage(
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.easeInOut,
+          );
+        }
       } else {
-        await _pageController.previousPage(
-          duration: const Duration(milliseconds: 700),
-          curve: Curves.easeInOut,
-        );
+        if (delta < 0) {
+          await _pageController.nextPage(
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.easeInOut,
+          );
+        } else if (delta > 0) {
+          await _pageController.previousPage(
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.easeInOut,
+          );
+        }
       }
-      await Future.delayed(const Duration(milliseconds: 600));
+
+      await Future.delayed(const Duration(milliseconds: 800));
       isScrolling = false;
     }
   }
 
   void _scrollToNextPage() {
-    final int page = _pageController.hasClients ? _pageController.page?.round() ?? 0 : 0;
-    final int lastPage = _pages.length - 1;
-    if (page < lastPage) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 700),
-        curve: Curves.easeInOut,
-      );
-    }
+    _pageController.nextPage(
+      duration: const Duration(milliseconds: 700),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -88,15 +89,13 @@ class _VillagePageState extends State<VillagePage> {
         children: [
           const AnimatedForestSpirits(),
           GestureDetector(
-            onVerticalDragUpdate: (details) =>
-                _handleScroll(details.primaryDelta ?? 0, isMouse: false),
+            onVerticalDragUpdate: (details) {
+              _handleScroll(details.primaryDelta ?? 0, isMouse: false);
+            },
             child: Listener(
               onPointerSignal: (pointerSignal) {
                 if (pointerSignal is PointerScrollEvent) {
-                  // Reaguj tylko na przewijanie pionowe, ignoruj poziome scrollowanie
-                  if (pointerSignal.scrollDelta.dy.abs() > pointerSignal.scrollDelta.dx.abs()) {
-                    _handleScroll(pointerSignal.scrollDelta.dy, isMouse: true);
-                  }
+                  _handleScroll(pointerSignal.scrollDelta.dy, isMouse: true);
                 }
               },
               child: PageView.builder(
@@ -120,7 +119,8 @@ class _VillagePageState extends State<VillagePage> {
                 dotHeight: 12,
                 dotWidth: 12,
                 spacing: 16,
-                dotColor: const Color.fromARGB(255, 51, 72, 46).withOpacity(0.5),
+                dotColor:
+                    const Color.fromARGB(255, 212, 212, 212).withOpacity(0.5),
               ),
             ),
           ),

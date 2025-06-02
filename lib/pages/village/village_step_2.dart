@@ -251,7 +251,7 @@ Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
         width: isMobile ? 180 : 320,
-        height: isMobile ? 280 : null,
+        height: isMobile ? 200 : null,
         child: AspectRatio(
           aspectRatio: 9 / 16,
           child: ClipRRect(

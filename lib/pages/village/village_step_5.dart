@@ -224,8 +224,9 @@ class _VillageStep5State extends State<VillageStep5>
           beginOffset: const Offset(0, 0.25),
           child: Text(
             isPolish
-                ? '''Na miejscu grupą odwiedzających zajmie się pięciu doświadczonych animatorów, którzy zadbają o pełne zanurzenie w realia Alverdorfu. Wcielając się w mieszkańców wioski, nie tylko poprowadzą warsztaty i aktywności, ale także ożywią opowieść, wciągając uczestników w fabularną rozgrywkę. Animatorzy posiadają doświadczenie w pracy z różnymi grupami wiekowymi – od dzieci, przez młodzież, aż po osoby dorosłe. Elastyczna formuła scenariusza sprawia, że każdy odwiedzający znajdzie coś dla siebie. Każda z postaci ma swoją historię, sekrety i zadania, a relacje między nimi tworzą autentyczną atmosferę dawnej osady. Dzięki profesjonalnej oprawie aktorskiej, dialogom i dynamicznej narracji, poczujesz się jak pełnoprawny bohater tej opowieści.'''
-                : '''On site, a team of five experienced animators will guide the visiting group, ensuring full immersion in the world of Alverdorf. As village residents, they will lead activities and workshops while bringing the story to life through interactive role-play. The animators have experience working with all age groups – from children and teens to adults. Thanks to a flexible script, every visitor can find something for themselves. Each character has their own backstory, secrets, and tasks, and the relationships between them create an authentic village atmosphere. With professional acting, dialogue, and storytelling, you'll feel like a true hero of this tale.''',
+    ? '''Na miejscu pięciu animatorów wcielających się w mieszkańców poprowadzi warsztaty, zadania i opowieść. Dzięki doświadczeniu z różnymi grupami i elastycznemu scenariuszowi, każdy poczuje się częścią historii Alverdorfu.'''
+    : '''Five animators, playing village residents, will lead workshops, quests, and storytelling. With experience across age groups and a flexible script, everyone becomes part of Alverdorf's tale.''',
+
             textAlign: TextAlign.center,
             style: GoogleFonts.imFellEnglishSc(
               fontSize: bodySize,
@@ -246,6 +247,7 @@ class _VillageStep5State extends State<VillageStep5>
     return Center(
       child: SizedBox(
         width: isMobile ? 180 : 320,
+        height: isMobile ? 200 : null,
         child: AspectRatio(
           aspectRatio: 9 / 16,
           child: ClipRRect(

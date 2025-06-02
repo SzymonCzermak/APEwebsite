@@ -4,4 +4,5 @@ enum PageType {
   contact,
   tour,
   village,
+  social,
 }

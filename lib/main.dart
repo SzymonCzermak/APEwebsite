@@ -1,13 +1,18 @@
 import 'package:apewebsite/language_controller.dart';
+import 'package:apewebsite/pages/contact/privacy_policy_page.dart';
+import 'package:apewebsite/pages/contact/terms_page.dart';
+import 'package:apewebsite/pages/contact/children_protection_page.dart';
+import 'package:apewebsite/pages/contact/coockie_policy_page.dart';
+import 'package:apewebsite/pages/about_page.dart';
+import 'package:apewebsite/pages/contact/contact_page.dart';
+import 'package:apewebsite/pages/tour_page.dart';
+import 'package:apewebsite/pages/village/village_page.dart';
+import 'package:apewebsite/pages/home/home_page.dart';
+import 'package:apewebsite/social_media_page.dart';
+import 'package:apewebsite/widgets/custom_app_bar.dart';
+import 'package:apewebsite/models/page_type.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'pages/home/home_page.dart';
-import 'pages/about_page.dart';
-import 'pages/contact_page.dart';
-import 'pages/tour_page.dart';
-import 'pages/village/village_page.dart';
-import 'widgets/custom_app_bar.dart';
-import 'models/page_type.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 void main() {
@@ -26,7 +31,7 @@ class MyWebsite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Alvernia Planet Education',
+      title: 'Alvernia Planet Edu - tu zaczyna się filmowa przygoda',
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => const MainScreen(),
@@ -34,6 +39,11 @@ class MyWebsite extends StatelessWidget {
         '/wycieczka': (context) => const TourPage(),
         '/kontakt': (context) => const ContactPage(),
         '/o-nas': (context) => const AboutPage(),
+        '/terms': (context) => const TermsPage(),
+        '/privacy': (context) => const PrivacyPolicyPage(),
+        '/children-protection': (context) => const ChildrenProtectionPage(),
+        '/cookies': (context) => const CookiesPolicyPage(),
+        '/social-media': (context) => const SocialMediaPage(),
       },
     );
   }
@@ -50,26 +60,9 @@ class _MainScreenState extends State<MainScreen> {
   PageType _currentPage = PageType.home;
 
   void _changePage(PageType newPage) {
-    String route;
-    switch (newPage) {
-      case PageType.village:
-        route = '/alverdorf';
-        break;
-      case PageType.tour:
-        route = '/wycieczka';
-        break;
-      case PageType.contact:
-        route = '/kontakt';
-        break;
-      case PageType.about:
-        route = '/o-nas';
-        break;
-      case PageType.home:
-      default:
-        route = '/';
-    }
-
-    Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
+    setState(() {
+      _currentPage = newPage;
+    });
   }
 
   Widget _getPageWidget() {
@@ -82,6 +75,8 @@ class _MainScreenState extends State<MainScreen> {
         return const TourPage();
       case PageType.village:
         return const VillagePage();
+      case PageType.social:
+        return const SocialMediaPage();
       case PageType.home:
       default:
         return HomePage(onTabSelected: _changePage);
@@ -91,10 +86,8 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        currentPage: _currentPage,
-      ),
-      body: HomePage(onTabSelected: _changePage),
+      appBar: CustomAppBar(currentPage: _currentPage),
+      body: _getPageWidget(),
     );
   }
 }

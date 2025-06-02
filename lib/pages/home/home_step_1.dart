@@ -157,12 +157,11 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                                     child: _buildCard(
                                       title: leftTitle,
                                       text: leftText,
-                                      color:
-                                          const Color.fromARGB(255, 0, 35, 139),
+                                      useGradient: true,
                                       textColor: Colors.white70,
                                       accentColor: Colors.white,
-                                      onTap: () =>
-                                          widget.onTabSelected(PageType.tour),
+                                      onTap: () => Navigator.pushNamed(context, '/wycieczka'),
+
                                     ),
                                   ),
                                 ),
@@ -178,12 +177,10 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                                     child: _buildCard(
                                       title: rightTitle,
                                       text: rightText,
-                                      color: const Color.fromARGB(
-                                          255, 163, 150, 129),
-                                      textColor:
-                                          const Color.fromARGB(255, 22, 20, 20),
-                                      accentColor:
-                                          const Color.fromARGB(255, 61, 40, 26),
+                                      useGradient: false,
+                                      color: const Color.fromARGB(255, 163, 150, 129),
+                                      textColor: const Color.fromARGB(255, 22, 20, 20),
+                                      accentColor: const Color.fromARGB(255, 61, 40, 26),
                                       onTap: () => Navigator.pushNamed(
                                           context, '/alverdorf'),
                                     ),
@@ -204,12 +201,11 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                                       child: _buildCard(
                                         title: leftTitle,
                                         text: leftText,
-                                        color: const Color.fromARGB(
-                                            255, 0, 35, 139),
+                                        useGradient: true,
                                         textColor: Colors.white70,
                                         accentColor: Colors.white,
-                                        onTap: () =>
-                                            widget.onTabSelected(PageType.tour),
+                                        onTap: () => Navigator.pushNamed(context, '/wycieczka'),
+
                                       ),
                                     ),
                                   ),
@@ -223,14 +219,11 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
                                       child: _buildCard(
                                         title: rightTitle,
                                         text: rightText,
-                                        color: const Color.fromARGB(
-                                            255, 163, 150, 129),
-                                        textColor: const Color.fromARGB(
-                                            255, 22, 20, 20),
-                                        accentColor: const Color.fromARGB(
-                                            255, 61, 40, 26),
-                                        onTap: () => widget
-                                            .onTabSelected(PageType.village),
+                                        useGradient: false,
+                                        color: const Color.fromARGB(255, 163, 150, 129),
+                                        textColor: const Color.fromARGB(255, 22, 20, 20),
+                                        accentColor: const Color.fromARGB(255, 61, 40, 26),
+onTap: () => Navigator.pushNamed(context, '/alverdorf'),
                                       ),
                                     ),
                                   ),
@@ -251,10 +244,11 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
   Widget _buildCard({
     required String title,
     required String text,
-    required Color color,
+    Color? color,
     required Color textColor,
     required Color accentColor,
     required VoidCallback onTap,
+    required bool useGradient,
   }) {
     final isSmallScreen = MediaQuery.of(context).size.width < 700;
 
@@ -262,17 +256,51 @@ class _HomeStep1State extends State<HomeStep1> with TickerProviderStateMixin {
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.all(isSmallScreen ? 16 : 24),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.85),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.4),
-              blurRadius: 24,
-              offset: const Offset(0, 10),
-            ),
+        decoration: useGradient
+    ? BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF0D0026), // bardzo ciemny granat
+            Color(0xFF160033), // głęboka noc
+            Color(0xFF24004F), // fiolet w cieniu
+            Color(0xFF310069), // ciemna purpura
+            Color(0xFF3F0085), // klasyczny fiolet
+            Color(0xFF5800B0), // żywszy fiolet
+            Color(0xFF7200D5), // purpurowy błysk
+            Color(0xFF8F00F9), // neonowy fiolet
+            Color(0xFFB000FF), // magenta
+            Color(0xFFC400FF), // różowo-fiolet
+            Color(0xFFE000FF), // pastelowy róż
+            Color(0xFFF5D0FF), // bardzo jasny fiolet/róż – mgiełka
+          ],
+          stops: [
+            0.0, 0.08, 0.15, 0.25, 0.35, 0.45, 0.55,
+            0.65, 0.75, 0.85, 0.92, 1.0
           ],
         ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFFB000FF).withOpacity(0.4),
+            blurRadius: 30,
+            offset: Offset(0, 12),
+          ),
+        ],
+      )
+    : BoxDecoration(
+        color: color!.withOpacity(0.85),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.4),
+            blurRadius: 24,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+
         child: FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.center,

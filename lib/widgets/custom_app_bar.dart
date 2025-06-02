@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/page_type.dart';
 import 'package:icons_plus/icons_plus.dart';
 import '../language_controller.dart';
-import 'package:apewebsite/styles/color.dart'; // poprawiony import
+import 'package:apewebsite/styles/color.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -11,18 +11,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   const CustomAppBar({super.key, required this.currentPage});
 
-  static const _bookeroUrl =
-      'https://alverniaplanet.bookero.pl/?gad_source=1&gad_campaignid=21184439646&gbraid=0AAAAACpnbKKuCOIqtNpPzqLUV020lKRu1&gclid=Cj0KCQjw9O_BBhCUARIsAHQMjS6El7Cv2TVWHD-yBMFAlW3vA1OrWT9Llg3aYSE6DldTCTv3AUWbFG4aAqKNEALw_wcB';
+  static const _bookeroUrl = 'https://alverniaplanet.bookero.pl/';
 
   Future<void> _launchBookero() async {
-  final uri = Uri.parse(_bookeroUrl);
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
-  } else {
-    debugPrint('Could not launch $_bookeroUrl');
+    final uri = Uri.parse(_bookeroUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint('Could not launch $_bookeroUrl');
+    }
   }
-}
-
 
   @override
   Size get preferredSize => const Size.fromHeight(90);
@@ -40,7 +38,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color.fromARGB(255, 0, 21, 65),
+            
+            Color.fromARGB(255, 0, 24, 75),
             Color.fromARGB(255, 0, 0, 0),
           ],
         ),
@@ -54,34 +53,35 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               if (isMobile)
                 PopupMenuButton<String>(
-  icon: const Icon(Icons.menu, color: Colors.white),
-  color: Colors.black87,
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-  onSelected: (value) {
-    if (value == 'bookero') {
-      _launchBookero();
-    } else {
-      Navigator.pushNamed(context, _routeFromPageType(PageType.values.firstWhere((e) => e.name == value)));
-    }
-  },
-  itemBuilder: (context) => [
-    _buildMenuItem(context, PageType.home, isPolish ? 'Strona Główna' : 'Home Page', Icons.home),
-    _buildMenuItem(context, PageType.village, isPolish ? 'Alverdorf' : 'Alverdorf', Icons.park),
-    _buildMenuItem(context, PageType.tour, isPolish ? 'Wycieczka' : 'Tour', Icons.school),
-    _buildMenuItem(context, PageType.about, isPolish ? 'O nas' : 'About', Icons.info),
-    _buildMenuItem(context, PageType.contact, isPolish ? 'Kontakt' : 'Contact', Icons.mail),
-    PopupMenuItem<String>(
-      value: 'bookero',
-      child: Row(
-        children: [
-          const Icon(Icons.calendar_month_rounded, color: Colors.amber, size: 18),
-          const SizedBox(width: 8),
-          const Text('Rezerwacja', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    ),
-  ],
-)
+                  icon: const Icon(Icons.menu, color: Colors.white),
+                  color: Colors.black87,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  onSelected: (value) {
+                    if (value == 'bookero') {
+                      _launchBookero();
+                    } else {
+                      Navigator.pushNamed(context, _routeFromPageType(PageType.values.firstWhere((e) => e.name == value)));
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    _buildMenuItem(context, PageType.home, isPolish ? 'Strona Główna' : 'Home Page', Icons.home),
+                    _buildMenuItem(context, PageType.village, isPolish ? 'Alverdorf' : 'Alverdorf', Icons.park),
+                    _buildMenuItem(context, PageType.tour, isPolish ? 'Wycieczka' : 'Tour', Icons.school),
+                    _buildMenuItem(context, PageType.about, isPolish ? 'O nas' : 'About', Icons.info),
+                    _buildMenuItem(context, PageType.contact, isPolish ? 'Kontakt' : 'Contact', Icons.mail),
+                    _buildMenuItem(context, PageType.social, isPolish ? 'Social' : 'Social', Icons.share),
+                    PopupMenuItem<String>(
+                      value: 'bookero',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.calendar_month_rounded, color: Colors.amber, size: 18),
+                          const SizedBox(width: 8),
+                          const Text('Rezerwacja', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
               else
                 Row(
                   children: [
@@ -94,53 +94,50 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               if (!isMobile)
                 Row(
-  children: [
-    _buildTab(context, 'O nas', 'About', PageType.about),
-    _buildDivider(),
-    _buildTab(context, 'Kontakt', 'Contact', PageType.contact),
-    const SizedBox(width: 16),
-    // Przycisk Rezerwacja z tłumaczeniem, obramowaniem i cieniem
-    InkWell(
-      onTap: _launchBookero,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: Colors.amber, // Żółte tło jak podkreślenie
-          borderRadius: BorderRadius.circular(35),
-          border: Border.all(color: const Color.fromARGB(255, 117, 87, 0), width: 2), // Obramowanie
-          boxShadow: [ // Subtelny cień
-            BoxShadow(
-              color: const Color.fromARGB(255, 67, 50, 0),
-              offset: const Offset(0, 3),
-              blurRadius: 6,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.calendar_month_rounded,
-                color: Colors.black87, size: 16),
-            const SizedBox(width: 4),
-            Text(
-              context.watch<LanguageController>().isPolish
-                  ? 'Rezerwacja'
-                  : 'Booking',
-              style: const TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-    const SizedBox(width: 16),
-    _buildLangSwitcher(context, isMobile: false),
-  ],
-)
-
+                  children: [
+                    _buildTab(context, 'O nas', 'About', PageType.about),
+                    _buildDivider(),
+                    _buildTab(context, 'Kontakt', 'Contact', PageType.contact),
+                    _buildDivider(),
+                    _buildTab(context, 'Social', 'Social', PageType.social),
+                    const SizedBox(width: 16),
+                    InkWell(
+                      onTap: _launchBookero,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.amber,
+                          borderRadius: BorderRadius.circular(35),
+                          border: Border.all(color: const Color.fromARGB(255, 117, 87, 0), width: 2),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color.fromARGB(255, 67, 50, 0),
+                              offset: const Offset(0, 3),
+                              blurRadius: 6,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.calendar_month_rounded, color: Colors.black87, size: 16),
+                            const SizedBox(width: 4),
+                            Text(
+                              isPolish ? 'Rezerwacja' : 'Booking',
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    _buildLangSwitcher(context, isMobile: false),
+                  ],
+                )
               else
                 _buildLangSwitcher(context, isMobile: true),
             ],
@@ -151,8 +148,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  PopupMenuItem<String> _buildMenuItem(
-      BuildContext context, PageType page, String label, IconData icon) {
+  PopupMenuItem<String> _buildMenuItem(BuildContext context, PageType page, String label, IconData icon) {
     return PopupMenuItem<String>(
       value: page.name,
       child: Row(
@@ -165,12 +161,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget _buildTab(
-    BuildContext context,
-    String pl,
-    String en,
-    PageType pageType,
-  ) {
+  Widget _buildTab(BuildContext context, String pl, String en, PageType pageType) {
     final isPolish = context.watch<LanguageController>().isPolish;
     final isSelected = currentPage == pageType;
     final gradient = AppColors.getGradientForPage(pageType);
@@ -196,6 +187,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         icon = Icons.mail;
         iconOutlined = Icons.mail_outline;
         break;
+      case PageType.social:
+        icon = Icons.share;
+        iconOutlined = Icons.share_outlined;
+        break;
       default:
         icon = Icons.home;
         iconOutlined = Icons.home_outlined;
@@ -210,18 +205,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               Icon(
                 isSelected ? icon : iconOutlined,
-                color: isSelected
-                    ? mainColor
-                    : const Color.fromARGB(255, 180, 180, 180),
+                color: isSelected ? mainColor : const Color.fromARGB(255, 180, 180, 180),
                 size: 18,
               ),
               const SizedBox(width: 4),
               Text(
                 isPolish ? pl : en,
                 style: TextStyle(
-                  color: isSelected
-                      ? mainColor
-                      : const Color.fromARGB(255, 181, 180, 180),
+                  color: isSelected ? mainColor : const Color.fromARGB(255, 181, 180, 180),
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w400,
                   fontSize: 15,
                 ),
@@ -273,8 +264,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             onTap: () => controller.setLanguage(true),
             borderRadius: BorderRadius.circular(30),
             child: Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: isMobile ? 6 : 10, vertical: 4),
+              padding: EdgeInsets.symmetric(horizontal: isMobile ? 6 : 10, vertical: 4),
               decoration: BoxDecoration(
                 color: isPolish ? Colors.amber : Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
@@ -290,8 +280,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             onTap: () => controller.setLanguage(false),
             borderRadius: BorderRadius.circular(30),
             child: Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: isMobile ? 6 : 10, vertical: 4),
+              padding: EdgeInsets.symmetric(horizontal: isMobile ? 6 : 10, vertical: 4),
               decoration: BoxDecoration(
                 color: !isPolish ? Colors.amber : Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
@@ -329,6 +318,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         return '/kontakt';
       case PageType.about:
         return '/o-nas';
+      case PageType.social:
+        return '/social-media';
       case PageType.home:
       default:
         return '/';

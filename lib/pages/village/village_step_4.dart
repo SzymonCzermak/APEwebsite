@@ -225,9 +225,9 @@ class _VillageStep4State extends State<VillageStep4>
           animation: _descController,
           beginOffset: const Offset(0, 0.25),
           child: Text(
-            isPolish
-                ? '''Wizyta w Alverdorfie to dwugodzinne, immersyjne doświadczenie w formie gry fabularnej. Przemierzając osadę, pomożesz jej mieszkańcom rozwiązać dawne tajemnice i odkryć sekrety przeszłości. Czeka Cię eksploracja, aktywności na świeżym powietrzu oraz spotkanie z dawnymi wierzeniami i tradycjami. Nauczysz się walki mieczem, strzelania z łuku, poznasz naturę słowiańskich bestii, zgłębisz wiedzę o ziołach, a na koniec stworzysz własny amulet szczęścia. To wyjątkowa okazja, by doświadczyć świata rodem dawnych opowieści – w sposób aktywny, angażujący i pełen magii.'''
-                : '''A visit to Alverdorf is a two-hour immersive experience in the form of a role-playing game. As you explore the village, you'll help its inhabitants uncover ancient secrets and solve old mysteries. You'll enjoy outdoor activities, discover old beliefs and traditions, learn sword fighting and archery, uncover the nature of Slavic creatures, explore herbal knowledge, and finally create your own lucky amulet. It’s a unique opportunity to live a tale-like adventure – in an active, engaging, and magical way.''',
+isPolish
+    ? '''Alverdorf to dwugodzinna gra fabularna na świeżym powietrzu. Pomóż mieszkańcom rozwiązać tajemnice, ucz się walki mieczem i łukiem, poznaj słowiańskie wierzenia, zioła i stwórz własny amulet. Przygoda pełna magii i ruchu.'''
+    : '''Alverdorf is a two-hour outdoor role-playing game. Help villagers solve mysteries, learn swordplay and archery, discover Slavic beliefs and herbs, and craft your own amulet. A magical, active adventure.''',
             textAlign: TextAlign.center,
             style: GoogleFonts.imFellEnglishSc(
               fontSize: bodySize,
@@ -248,6 +248,7 @@ class _VillageStep4State extends State<VillageStep4>
     return Center(
       child: SizedBox(
         width: isMobile ? 180 : 320,
+        height: isMobile ? 200 : null,
         child: AspectRatio(
           aspectRatio: 9 / 16,
           child: ClipRRect(

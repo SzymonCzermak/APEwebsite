@@ -251,6 +251,7 @@ class _VillageStep3State extends State<VillageStep3>
     return Center(
       child: SizedBox(
         width: isMobile ? 180 : 320,
+        height: isMobile ? 200 : null,
         child: AspectRatio(
           aspectRatio: 9 / 16,
           child: ClipRRect(
