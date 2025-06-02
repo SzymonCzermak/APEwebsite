@@ -111,7 +111,7 @@ class CustomFooter extends StatelessWidget {
       Text(
         'Szymon Czermak (zermuart)',
         style: GoogleFonts.imFellEnglishSc(
-          fontSize: 20,
+          fontSize: 12,
           color: Colors.white,
           shadows: const [
             Shadow(blurRadius: 6, color: Colors.black87, offset: Offset(0, 2)),
@@ -119,7 +119,7 @@ class CustomFooter extends StatelessWidget {
         ),
       ),
       const SizedBox(height: 12),
-      Image.asset('assets/logos/logo_zermuart.png', height: 64),
+      Image.asset('assets/logos/logo_zermuart.png', height: 32),
     ],
   ),
 ),
