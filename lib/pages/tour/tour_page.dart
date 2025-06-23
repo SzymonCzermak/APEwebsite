@@ -1,24 +1,22 @@
-import 'package:apewebsite/pages/village/village_step_1.dart';
-import 'package:apewebsite/pages/village/village_step_2.dart';
-import 'package:apewebsite/pages/village/village_step_3.dart';
-import 'package:apewebsite/pages/village/village_step_4.dart';
-import 'package:apewebsite/pages/village/village_step_5.dart';
-import 'package:apewebsite/pages/village/footer_village.dart';
-import 'package:apewebsite/background/AnimatedSlavicBackground.dart';
-import 'package:apewebsite/widgets/custom_app_bar.dart';
-import 'package:apewebsite/models/page_type.dart';
+import 'package:apewebsite/pages/tour/tour_page_3.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class VillagePage extends StatefulWidget {
-  const VillagePage({super.key});
+import 'package:apewebsite/background/AnimatedEducationalBackground.dart';
+import 'package:apewebsite/pages/tour/tour_step_1.dart';
+import 'package:apewebsite/pages/tour/tour_step_2.dart';
+import 'package:apewebsite/widgets/custom_app_bar.dart';
+import 'package:apewebsite/models/page_type.dart';
+
+class TourPage extends StatefulWidget {
+  const TourPage({super.key});
 
   @override
-  State<VillagePage> createState() => _VillagePageState();
+  State<TourPage> createState() => _TourPageState();
 }
 
-class _VillagePageState extends State<VillagePage> {
+class _TourPageState extends State<TourPage> {
   final PageController _pageController = PageController();
   bool isScrolling = false;
 
@@ -28,13 +26,9 @@ class _VillagePageState extends State<VillagePage> {
   void initState() {
     super.initState();
     _pages = [
-      VillageStep1(onNext: _scrollToNextPage),
-      const VillageStep2(),
-      const VillageStep3(),
-      const VillageStep4(),
-      const VillageStep5(),
-      const FooterVillage(),
-
+      TourStep1(onNext: _scrollToNextPage),
+      TourStep2(onNext: _scrollToNextPage),
+      const TourStep3(),
     ];
   }
 
@@ -83,10 +77,11 @@ class _VillagePageState extends State<VillagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(currentPage: PageType.village),
+      appBar: const CustomAppBar(currentPage: PageType.tour),
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
-          const AnimatedForestSpirits(),
+          const AnimatedEducationalBackground(),
           GestureDetector(
             onVerticalDragUpdate: (details) {
               _handleScroll(details.primaryDelta ?? 0, isMouse: false);
@@ -114,12 +109,11 @@ class _VillagePageState extends State<VillagePage> {
               count: _pages.length,
               axisDirection: Axis.vertical,
               effect: WormEffect(
-                activeDotColor: const Color.fromARGB(255, 201, 114, 0),
-                dotHeight: 12,
-                dotWidth: 12,
+                activeDotColor: Colors.white,
+                dotColor: Colors.white.withOpacity(0.3),
+                dotHeight: 10,
+                dotWidth: 10,
                 spacing: 16,
-                dotColor:
-                    const Color.fromARGB(255, 212, 212, 212).withOpacity(0.5),
               ),
             ),
           ),

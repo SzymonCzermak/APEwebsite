@@ -248,24 +248,26 @@ Widget build(BuildContext context) {
   }
 
   Widget _buildImage({required bool isMobile}) {
-    return Center(
-      child: SizedBox(
-        width: isMobile ? 180 : 320,
-        height: isMobile ? 200 : null,
-        child: AspectRatio(
-          aspectRatio: 9 / 16,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              'assets/alverdorf_page/step/1.png',
-              fit: BoxFit.cover,
-              filterQuality: FilterQuality.medium,
-            ),
-          ),
+  final screenHeight = MediaQuery.of(context).size.height;
+  final imageHeight = isMobile ? screenHeight * 0.3 : screenHeight * 0.5;
+  final imageWidth = imageHeight * (9 / 16); // Proporcja 9:16
+
+  return Center(
+    child: SizedBox(
+      height: imageHeight,
+      width: imageWidth,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Image.asset(
+          'assets/alverdorf_page/step/1.png',
+          fit: BoxFit.cover,
+          filterQuality: FilterQuality.medium,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
 
 class _AnimatedSlideFade extends StatelessWidget {

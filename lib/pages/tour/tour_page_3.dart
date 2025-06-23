@@ -1,17 +1,16 @@
+import 'package:apewebsite/language_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:apewebsite/language_controller.dart';
 
-class VillageStep5 extends StatefulWidget {
-  const VillageStep5({super.key});
+class TourStep3 extends StatefulWidget {
+  const TourStep3({super.key});
 
   @override
-  State<VillageStep5> createState() => _VillageStep5State();
+  State<TourStep3> createState() => _TourStep3State();
 }
 
-class _VillageStep5State extends State<VillageStep5>
-    with TickerProviderStateMixin {
+class _TourStep3State extends State<TourStep3> with TickerProviderStateMixin {
   late final AnimationController _titleController;
   late final AnimationController _descController;
   late final AnimationController _imageController;
@@ -24,26 +23,11 @@ class _VillageStep5State extends State<VillageStep5>
   void initState() {
     super.initState();
 
-    _titleController = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-    _descController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-    _imageController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-    _lineController = AnimationController(
-      duration: const Duration(milliseconds: 400),
-      vsync: this,
-    );
-    _topBottomLineController = AnimationController(
-      duration: const Duration(milliseconds: 900),
-      vsync: this,
-    );
+    _titleController = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
+    _descController = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    _imageController = AnimationController(duration: const Duration(milliseconds: 800), vsync: this);
+    _lineController = AnimationController(duration: const Duration(milliseconds: 400), vsync: this);
+    _topBottomLineController = AnimationController(duration: const Duration(milliseconds: 900), vsync: this);
 
     _lineAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
       parent: _lineController,
@@ -127,7 +111,7 @@ class _VillageStep5State extends State<VillageStep5>
                               flex: 2,
                               child: _AnimatedSlideFade(
                                 animation: _imageController,
-                                beginOffset: const Offset(-0.15, 0),
+                                beginOffset: const Offset(0.15, 0),
                                 child: _buildImage(isMobile: isMobile),
                               ),
                             ),
@@ -135,8 +119,7 @@ class _VillageStep5State extends State<VillageStep5>
                               flex: 3,
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 24.0),
-                                child: _buildText(
-                                    titleFontSize, bodyFontSize, isPolish),
+                                child: _buildText(titleFontSize, bodyFontSize, isPolish),
                               ),
                             ),
                           ],
@@ -154,7 +137,6 @@ class _VillageStep5State extends State<VillageStep5>
   Widget _buildText(double titleSize, double bodySize, bool isPolish) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _AnimatedSlideFade(
           animation: _titleController,
@@ -162,18 +144,16 @@ class _VillageStep5State extends State<VillageStep5>
           child: Column(
             children: [
               Text(
-                isPolish
-                    ? 'Oprawa aktorska – animatorzy'
-                    : 'Theatrical setting – animators',
+                isPolish ? 'Jak tworzy się film?' : 'How is a film made?',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.imFellEnglishSc(
+                style: GoogleFonts.robotoSlab(
                   fontSize: titleSize,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   shadows: const [
                     Shadow(
                       blurRadius: 6,
-                      color: Colors.black87,
+                      color: Colors.black,
                       offset: Offset(0, 2),
                     ),
                   ],
@@ -195,20 +175,12 @@ class _VillageStep5State extends State<VillageStep5>
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                             colors: [
-                              Color(0xFF000000), // czarny początek
-                              Color(0xFF8BC34A), // zieleń
-                              Color.fromARGB(255, 128, 94, 0), // brąz
-                              Color(0xFF000000), // czarny koniec
-                            ],
+                        Colors.black,
+                        Colors.orange,
+                        Colors.deepOrange,
+                        Colors.black,
+                      ],
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(1)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black54,
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
                         ),
                       ),
                     ),
@@ -224,17 +196,19 @@ class _VillageStep5State extends State<VillageStep5>
           beginOffset: const Offset(0, 0.25),
           child: Text(
             isPolish
-    ? '''Na miejscu pięciu animatorów wcielających się w mieszkańców poprowadzi warsztaty, zadania i opowieść. Dzięki doświadczeniu z różnymi grupami i elastycznemu scenariuszowi, każdy poczuje się częścią historii Alverdorfu.'''
-    : '''Five animators, playing village residents, will lead workshops, quests, and storytelling. With experience across age groups and a flexible script, everyone becomes part of Alverdorf's tale.''',
-
+                ? 'Podczas tej wycieczki odkryjesz, jak powstają sceny, jak nagrywa się dźwięk, jak działa green screen i czym zajmuje się scenografia.'
+                : 'During this tour, you will discover how scenes are created, how sound is recorded, how green screen works, and what set design really means.',
             textAlign: TextAlign.center,
-            style: GoogleFonts.imFellEnglishSc(
+            style: GoogleFonts.roboto(
               fontSize: bodySize,
               color: Colors.white,
               height: 1.4,
               shadows: const [
                 Shadow(
-                    blurRadius: 4, color: Colors.black, offset: Offset(0, 2)),
+                  blurRadius: 4,
+                  color: Colors.black,
+                  offset: Offset(0, 2),
+                ),
               ],
             ),
           ),
@@ -323,20 +297,11 @@ class _AnimatedLine extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: isTop
-                    ? [
-                        const Color.fromARGB(255, 0, 0, 0),
-                        const Color(0xFF5A7F2E),
-                        const Color(0xFF8BC34A),
-                        const Color(0xFF5A7F2E),
-                        const Color.fromARGB(255, 0, 0, 0),
-                      ]
-                    : [
-                        const Color.fromARGB(255, 0, 0, 0),
-                        const Color(0xFF5E4300),
-                        const Color(0xFF805E00),
-                        const Color(0xFF5E4300),
-                        const Color.fromARGB(255, 0, 0, 0),
+                colors: [
+                        Colors.black,
+                        Colors.orange,
+                        Colors.deepOrange,
+                        Colors.black,
                       ],
               ),
               borderRadius: BorderRadius.circular(1),

@@ -226,7 +226,7 @@ class _VillageStep3State extends State<VillageStep3>
           beginOffset: const Offset(0, 0.25),
           child: Text(
             isPolish
-                ? '''Przekraczając bramy wioski, zanurzysz się w jej historię – legendę opowiedzianą nie tylko słowami. To sami mieszkańcy wprowadzą Cię w opowieść o Alverdorfu, a jej ślady dostrzeżesz, odkrywając najskrytsze zakamarki osady. Każde spotkanie to nowa lekcja – nauczysz się strzelać z łuku pod czujnym okiem łowczyni, poznasz sekrety magicznych istot, a jeśli masz w sobie ducha wojownika, sprawdzisz się w fechtunku. Każdy element tego świata stanie się Twoim doświadczeniem, każda chwila – częścią Twojej własnej opowieści.'''
+                ? '''Przekraczając bramy wioski, zanurzysz się w jej historię – legendę opowiedzianą nie tylko słowami. To sami mieszkańcy wprowadzą Cię w opowieść o Alverdorf, a jej ślady dostrzeżesz, odkrywając najskrytsze zakamarki osady. Każde spotkanie to nowa lekcja – nauczysz się strzelać z łuku pod czujnym okiem łowczyni, poznasz sekrety magicznych istot, a jeśli masz w sobie ducha wojownika, sprawdzisz się w fechtunku. Każdy element tego świata stanie się Twoim doświadczeniem, każda chwila – częścią Twojej własnej opowieści.'''
                 : '''As you cross the gates of the village, you’ll immerse yourself in its history – a legend told not only through words. It’s the villagers themselves who will guide you through the story of Alverdorf, and its traces you’ll uncover in the village’s hidden corners. Each encounter is a new lesson – you’ll learn archery under the watchful eye of a huntress, discover the secrets of magical beings, and if you have the spirit of a warrior, you’ll try your hand at fencing. Every element of this world becomes your experience, every moment – part of your own story.''',
             textAlign: TextAlign.center,
             style: GoogleFonts.imFellEnglishSc(
@@ -248,24 +248,25 @@ class _VillageStep3State extends State<VillageStep3>
   }
 
   Widget _buildImage({required bool isMobile}) {
-    return Center(
-      child: SizedBox(
-        width: isMobile ? 180 : 320,
-        height: isMobile ? 200 : null,
-        child: AspectRatio(
-          aspectRatio: 9 / 16,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              'assets/alverdorf_page/step/2.png',
-              fit: BoxFit.cover,
-              filterQuality: FilterQuality.medium,
-            ),
-          ),
+  final screenHeight = MediaQuery.of(context).size.height;
+  final imageHeight = isMobile ? screenHeight * 0.3 : screenHeight * 0.5;
+  final imageWidth = imageHeight * (9 / 16); // Proporcja 9:16
+
+  return Center(
+    child: SizedBox(
+      height: imageHeight,
+      width: imageWidth,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Image.asset(
+          'assets/alverdorf_page/step/1.png',
+          fit: BoxFit.cover,
+          filterQuality: FilterQuality.medium,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class _AnimatedSlideFade extends StatelessWidget {

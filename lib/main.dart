@@ -5,7 +5,7 @@ import 'package:apewebsite/pages/contact/children_protection_page.dart';
 import 'package:apewebsite/pages/contact/coockie_policy_page.dart';
 import 'package:apewebsite/pages/about_page.dart';
 import 'package:apewebsite/pages/contact/contact_page.dart';
-import 'package:apewebsite/pages/tour_page.dart';
+import 'package:apewebsite/pages/tour/tour_page.dart';
 import 'package:apewebsite/pages/village/village_page.dart';
 import 'package:apewebsite/pages/home/home_page.dart';
 import 'package:apewebsite/social_media_page.dart';
