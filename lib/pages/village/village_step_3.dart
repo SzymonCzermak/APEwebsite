@@ -259,7 +259,7 @@ class _VillageStep3State extends State<VillageStep3>
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Image.asset(
-          'assets/alverdorf_page/step/1.png',
+          'assets/alverdorf_page/step/2.png',
           fit: BoxFit.cover,
           filterQuality: FilterQuality.medium,
         ),

@@ -256,7 +256,7 @@ isPolish
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Image.asset(
-          'assets/alverdorf_page/step/1.png',
+          'assets/alverdorf_page/step/3.png',
           fit: BoxFit.cover,
           filterQuality: FilterQuality.medium,
         ),
