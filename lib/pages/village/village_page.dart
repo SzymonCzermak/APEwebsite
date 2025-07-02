@@ -28,6 +28,7 @@ class _VillagePageState extends State<VillagePage> {
   void initState() {
     super.initState();
     _pages = [
+            const FooterVillage(),
       VillageStep1(onNext: _scrollToNextPage),
       const VillageStep2(),
       const VillageStep3(),
@@ -39,39 +40,50 @@ class _VillagePageState extends State<VillagePage> {
   }
 
   void _handleScroll(double delta, {required bool isMouse}) async {
-    if (!isScrolling) {
-      isScrolling = true;
+  if (!isScrolling) {
+    final currentPage = _pageController.page?.round() ?? 0;
 
-      if (isMouse) {
-        if (delta > 0) {
-          await _pageController.nextPage(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut,
-          );
-        } else if (delta < 0) {
-          await _pageController.previousPage(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut,
-          );
-        }
-      } else {
-        if (delta < 0) {
-          await _pageController.nextPage(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut,
-          );
-        } else if (delta > 0) {
-          await _pageController.previousPage(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut,
-          );
-        }
-      }
-
-      await Future.delayed(const Duration(milliseconds: 800));
-      isScrolling = false;
+    // Ograniczenia na podstawie typu wejścia i kierunku przewijania
+    if ((isMouse && delta > 0 && currentPage == _pages.length - 1) || // myszka: dół na końcu
+        (isMouse && delta < 0 && currentPage == 0) ||                 // myszka: góra na początku
+        (!isMouse && delta < 0 && currentPage == _pages.length - 1) ||// touch: dół na końcu
+        (!isMouse && delta > 0 && currentPage == 0)) {                // touch: góra na początku
+      return;
     }
+
+    isScrolling = true;
+
+    if (isMouse) {
+      if (delta > 0) {
+        await _pageController.nextPage(
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeInOut,
+        );
+      } else {
+        await _pageController.previousPage(
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeInOut,
+        );
+      }
+    } else {
+      if (delta < 0) {
+        await _pageController.nextPage(
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeInOut,
+        );
+      } else {
+        await _pageController.previousPage(
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
+
+    await Future.delayed(const Duration(milliseconds: 800));
+    isScrolling = false;
   }
+}
+
 
   void _scrollToNextPage() {
     _pageController.nextPage(

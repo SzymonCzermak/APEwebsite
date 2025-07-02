@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class TourStep3 extends StatefulWidget {
-  const TourStep3({super.key});
+class TourStep6 extends StatefulWidget {
+  const TourStep6({super.key});
 
   @override
-  State<TourStep3> createState() => _TourStep3State();
+  State<TourStep6> createState() => _TourStep3State();
 }
 
-class _TourStep3State extends State<TourStep3> with TickerProviderStateMixin {
+class _TourStep3State extends State<TourStep6> with TickerProviderStateMixin {
   late final AnimationController _titleController;
   late final AnimationController _descController;
   late final AnimationController _imageController;
@@ -107,19 +107,21 @@ class _TourStep3State extends State<TourStep3> with TickerProviderStateMixin {
                       : Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+                            // TEKST PO LEWEJ
+                            Expanded(
+                              flex: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 24.0),
+                                child: _buildText(titleFontSize, bodyFontSize, isPolish),
+                              ),
+                            ),
+                            // OBRAZEK PO PRAWEJ
                             Expanded(
                               flex: 2,
                               child: _AnimatedSlideFade(
                                 animation: _imageController,
                                 beginOffset: const Offset(0.15, 0),
                                 child: _buildImage(isMobile: isMobile),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 24.0),
-                                child: _buildText(titleFontSize, bodyFontSize, isPolish),
                               ),
                             ),
                           ],
@@ -135,87 +137,90 @@ class _TourStep3State extends State<TourStep3> with TickerProviderStateMixin {
   }
 
   Widget _buildText(double titleSize, double bodySize, bool isPolish) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _AnimatedSlideFade(
-          animation: _titleController,
-          beginOffset: const Offset(0, 0.2),
-          child: Column(
-            children: [
-              Text(
-                isPolish ? 'Jak tworzy się film?' : 'How is a film made?',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.robotoSlab(
-                  fontSize: titleSize,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  shadows: const [
-                    Shadow(
-                      blurRadius: 6,
-                      color: Colors.black,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      _AnimatedSlideFade(
+        animation: _titleController,
+        beginOffset: const Offset(0, 0.2),
+        child: Column(
+          children: [
+            Text(
+              isPolish
+                  ? 'Odkryj filmową scenografię'
+                  : 'Discover cinematic set design',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.robotoSlab(
+                fontSize: titleSize,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                shadows: const [
+                  Shadow(
+                    blurRadius: 6,
+                    color: Colors.black,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
-              const SizedBox(height: 6),
-              AnimatedBuilder(
-                animation: _lineAnimation,
-                builder: (context, child) {
-                  return Opacity(
-                    opacity: _lineAnimation.value,
-                    child: Transform.translate(
-                      offset: Offset(0, 10 * (1 - _lineAnimation.value)),
-                      child: Container(
-                        height: 2,
-                        width: 300,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [
-                        Colors.black,
-                        Color(0xFFBA68C8),
-                        Color.fromARGB(255, 91, 0, 107),
-                        Colors.black,
-                      ],
-                          ),
+            ),
+            const SizedBox(height: 6),
+            AnimatedBuilder(
+              animation: _lineAnimation,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _lineAnimation.value,
+                  child: Transform.translate(
+                    offset: Offset(0, 10 * (1 - _lineAnimation.value)),
+                    child: Container(
+                      height: 2,
+                      width: 300,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Colors.black,
+                            Color(0xFFBA68C8),
+                            Color.fromARGB(255, 91, 0, 107),
+                            Colors.black,
+                          ],
                         ),
                       ),
                     ),
-                  );
-                },
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 16),
+      _AnimatedSlideFade(
+        animation: _descController,
+        beginOffset: const Offset(0, 0.25),
+        child: Text(
+          isPolish
+              ? 'Wejdź między ściany stworzone z myślą o filmowej opowieści. Poczuj klimat scen, które wcześniej istniały tylko w kadrze.'
+              : 'Step into spaces built for storytelling. Feel the atmosphere of scenes that once lived only on screen.',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.roboto(
+            fontSize: bodySize,
+            color: Colors.white,
+            height: 1.4,
+            shadows: const [
+              Shadow(
+                blurRadius: 4,
+                color: Colors.black,
+                offset: Offset(0, 2),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 16),
-        _AnimatedSlideFade(
-          animation: _descController,
-          beginOffset: const Offset(0, 0.25),
-          child: Text(
-            isPolish
-                ? 'Podczas tej wycieczki odkryjesz, jak powstają sceny, jak nagrywa się dźwięk, jak działa green screen i czym zajmuje się scenografia.'
-                : 'During this tour, you will discover how scenes are created, how sound is recorded, how green screen works, and what set design really means.',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.roboto(
-              fontSize: bodySize,
-              color: Colors.white,
-              height: 1.4,
-              shadows: const [
-                Shadow(
-                  blurRadius: 4,
-                  color: Colors.black,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
 
   Widget _buildImage({required bool isMobile}) {
   final screenHeight = MediaQuery.of(context).size.height;
@@ -229,7 +234,7 @@ class _TourStep3State extends State<TourStep3> with TickerProviderStateMixin {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Image.asset(
-          'assets/tour_page/1.png',
+          'assets/tour_page/4.png',
           fit: BoxFit.cover,
           filterQuality: FilterQuality.medium,
         ),

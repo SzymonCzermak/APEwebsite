@@ -75,179 +75,192 @@ class _VillageStep1State extends State<VillageStep1>
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     final isMobile = screenWidth < 750;
     final isPolish = context.watch<LanguageController>().isPolish;
 
-    final titleFontSize = isMobile ? 26.0 : 46.0;
-    final bodyFontSize = isMobile ? 15.0 : 21.0;
+    final titleFontSize = isMobile ? 24.0 : screenHeight * 0.045;
+    final bodyFontSize = isMobile ? 14.0 : screenHeight * 0.026;
+    final logoHeight = isMobile ? screenHeight * 0.12 : screenHeight * 0.22;
+    final qEventsHeight = isMobile ? screenHeight * 0.09 : screenHeight * 0.12;
 
     return Stack(
       children: [
         Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1500),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _AnimatedFadeSlide(
-                          animation: _word1Controller,
-                          offset: const Offset(0, 0.2),
-                          child: Text(
-                            isPolish ? 'Dawno,' : 'Long,',
-                            style: GoogleFonts.imFellEnglishSc(
-                              fontSize: isMobile ? 20 : 28,
-                              color: Colors.white70,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        _AnimatedFadeSlide(
-                          animation: _word2Controller,
-                          offset: const Offset(0, 0.2),
-                          child: Text(
-                            isPolish ? 'dawno,' : 'long,',
-                            style: GoogleFonts.imFellEnglishSc(
-                              fontSize: isMobile ? 20 : 28,
-                              color: Colors.white70,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        _AnimatedFadeSlide(
-                          animation: _word3Controller,
-                          offset: const Offset(0, 0.2),
-                          child: Text(
-                            isPolish ? 'dawno temu...' : 'long ago...',
-                            style: GoogleFonts.imFellEnglishSc(
-                              fontSize: isMobile ? 20 : 28,
-                              color: Colors.white70,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 28),
-                    _AnimatedFadeSlide(
-                      animation: _titleController,
-                      offset: const Offset(0, 0.2),
-                      child: Column(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: 1500,
+                  maxHeight: constraints.maxHeight,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            isPolish ? 'Witaj w' : 'Welcome to',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.imFellEnglishSc(
-                              fontSize: titleFontSize,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                          _AnimatedFadeSlide(
+                            animation: _word1Controller,
+                            offset: const Offset(0, 0.2),
+                            child: Text(
+                              isPolish ? 'Dawno,' : 'Long,',
+                              style: GoogleFonts.imFellEnglishSc(
+                                fontSize: bodyFontSize,
+                                color: Colors.white70,
+                                fontStyle: FontStyle.italic,
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 0),
-                          Image.asset(
-                            'assets/logos/logo_alverdorf.png',
-                            height: isMobile ? 100 : 200,
+                          const SizedBox(width: 12),
+                          _AnimatedFadeSlide(
+                            animation: _word2Controller,
+                            offset: const Offset(0, 0.2),
+                            child: Text(
+                              isPolish ? 'dawno,' : 'long,',
+                              style: GoogleFonts.imFellEnglishSc(
+                                fontSize: bodyFontSize,
+                                color: Colors.white70,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          _AnimatedFadeSlide(
+                            animation: _word3Controller,
+                            offset: const Offset(0, 0.2),
+                            child: Text(
+                              isPolish ? 'dawno temu...' : 'long ago...',
+                              style: GoogleFonts.imFellEnglishSc(
+                                fontSize: bodyFontSize,
+                                color: Colors.white70,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    _AnimatedFadeSlide(
-                      animation: _lineController,
-                      offset: const Offset(0, 0.1),
-                      child: Container(
-                        height: 2,
-                        width: 300,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.black,
-                              Color(0xFF8BC34A),
-                              Color.fromARGB(255, 128, 94, 0),
-                              Colors.black,
-                            ],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    _AnimatedFadeSlide(
-                      animation: _descController,
-                      offset: const Offset(0, 0.25),
-                      child: Text(
-                        isPolish
-                            ? 'Przed Tobą niezwykła podróż w świat magii i opowieści.'
-                            : 'An extraordinary journey into a world of magic and stories awaits you.',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.imFellEnglishSc(
-                          fontSize: bodyFontSize,
-                          color: Colors.white,
-                          height: 1.5,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    _AnimatedFadeSlide(
-                      animation: _buttonController,
-                      offset: const Offset(0, 0.1),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color.fromARGB(255, 128, 94, 0).withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(2, 4),
+                      const SizedBox(height: 16),
+                      _AnimatedFadeSlide(
+                        animation: _titleController,
+                        offset: const Offset(0, 0.2),
+                        child: Column(
+                          children: [
+                            Text(
+                              isPolish ? 'Witaj w' : 'Welcome to',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.imFellEnglishSc(
+                                fontSize: titleFontSize,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                            Image.asset(
+                              'assets/logos/logo_alverdorf.png',
+                              height: logoHeight,
                             ),
                           ],
-                          border: Border.all(color: Colors.black, width: 1),
-                          borderRadius: BorderRadius.circular(12),
                         ),
-                        child: TextButton(
-                          onPressed: widget.onNext,
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                            backgroundColor: const Color.fromARGB(255, 128, 94, 0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                      ),
+                      const SizedBox(height: 12),
+                      _AnimatedFadeSlide(
+                        animation: _lineController,
+                        offset: const Offset(0, 0.1),
+                        child: Container(
+                          height: 2,
+                          width: screenWidth * 0.4,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.black,
+                                Color(0xFF8BC34A),
+                                Color.fromARGB(255, 128, 94, 0),
+                                Colors.black,
+                              ],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
                             ),
                           ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      _AnimatedFadeSlide(
+                        animation: _descController,
+                        offset: const Offset(0, 0.25),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Text(
-                            isPolish ? 'Rozpocznij przygodę' : 'Start the journey',
+                            isPolish
+                                ? 'Przed Tobą niezwykła podróż w świat magii i opowieści.'
+                                : 'An extraordinary journey into a world of magic and stories awaits you.',
+                            textAlign: TextAlign.center,
                             style: GoogleFonts.imFellEnglishSc(
                               fontSize: bodyFontSize,
                               color: Colors.white,
+                              height: 1.4,
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    _AnimatedFadeSlide(
-                      animation: _logoQEventsController,
-                      offset: const Offset(0, 0.1),
-                      child: Opacity(
-                        opacity: 0.7,
-                        child: Image.asset(
-                          'assets/logos/logo_qevents.png',
-                          height: isMobile ? 75 : 125,
+                      const SizedBox(height: 24),
+                      _AnimatedFadeSlide(
+                        animation: _buttonController,
+                        offset: const Offset(0, 0.1),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color.fromARGB(255, 128, 94, 0).withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(2, 4),
+                              ),
+                            ],
+                            border: Border.all(color: Colors.black, width: 1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: TextButton(
+                            onPressed: widget.onNext,
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.015,
+                                horizontal: screenWidth * 0.08,
+                              ),
+                              backgroundColor: const Color.fromARGB(255, 128, 94, 0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Text(
+                              isPolish ? 'Rozpocznij przygodę' : 'Start the journey',
+                              style: GoogleFonts.imFellEnglishSc(
+                                fontSize: bodyFontSize,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                  ],
+                      const SizedBox(height: 12),
+                      _AnimatedFadeSlide(
+                        animation: _logoQEventsController,
+                        offset: const Offset(0, 0.1),
+                        child: Opacity(
+                          opacity: 0.7,
+                          child: Image.asset(
+                            'assets/logos/logo_qevents.png',
+                            height: qEventsHeight,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
         const NavigationHintOverlay(),

@@ -84,8 +84,8 @@ class _TourStep1State extends State<TourStep1> with TickerProviderStateMixin {
                     gradient: LinearGradient(
                       colors: [
                         Colors.black,
-                        Colors.orange,
-                        Colors.deepOrange,
+                        Color(0xFFBA68C8),
+                        Color.fromARGB(255, 91, 0, 107),
                         Colors.black,
                       ],
                       begin: Alignment.centerLeft,
@@ -116,7 +116,7 @@ class _TourStep1State extends State<TourStep1> with TickerProviderStateMixin {
                 child: ElevatedButton(
                   onPressed: widget.onNext,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrange,
+                    backgroundColor: Color.fromARGB(255, 91, 0, 107),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 32, vertical: 16),
                     shape: RoundedRectangleBorder(

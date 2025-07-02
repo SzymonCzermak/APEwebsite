@@ -6,15 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:apewebsite/language_controller.dart';
 
-class FooterVillage extends StatefulWidget {
-  const FooterVillage({super.key});
+class TourStep11 extends StatefulWidget {
+  const TourStep11({super.key});
 
   @override
-  State<FooterVillage> createState() => _FooterVillageState();
+  State<TourStep11> createState() => _TourStep11State();
 }
 
-class _FooterVillageState extends State<FooterVillage>
-    with TickerProviderStateMixin {
+class _TourStep11State extends State<TourStep11> with TickerProviderStateMixin {
   late final AnimationController _titleController;
   late final AnimationController _iframeController;
   late final AnimationController _buttonController;
@@ -26,7 +25,7 @@ class _FooterVillageState extends State<FooterVillage>
     if (kIsWeb) {
       // ignore: undefined_prefixed_name
       ui.platformViewRegistry.registerViewFactory(
-        'bookero-iframe',
+        'bookero-iframe-tour',
         (int viewId) => html.IFrameElement()
           ..src = 'https://alverniaplanet.bookero.pl/'
           ..style.border = 'none'
@@ -80,14 +79,14 @@ class _FooterVillageState extends State<FooterVillage>
     final isMobile = screenWidth < 600;
 
     final contentMaxWidth = screenWidth > 1400 ? 1400.0 : screenWidth * 0.95;
-    final double titleFontSize = isMobile ? screenHeight * 0.03 : screenHeight * 0.045;
-    final double buttonFontSize = isMobile ? screenHeight * 0.018 : screenHeight * 0.022;
+    final double titleFontSize = screenHeight * (isMobile ? 0.035 : 0.05);
+    final double buttonFontSize = screenHeight * (isMobile ? 0.02 : 0.024);
     final double iframeAspect = 16 / 9;
 
     final double iframeTargetWidth = contentMaxWidth;
     final double iframeTargetHeight = isMobile
-        ? screenHeight * 0.6
-        : (iframeTargetWidth / iframeAspect).clamp(200.0, screenHeight * 0.5);
+        ? screenHeight * 0.55
+        : (iframeTargetWidth / iframeAspect).clamp(200.0, screenHeight * 0.6);
 
     return Container(
       width: double.infinity,
@@ -107,14 +106,14 @@ class _FooterVillageState extends State<FooterVillage>
                     beginOffset: const Offset(0, 0.2),
                     child: Text(
                       isPolish
-                          ? 'Wkrocz do świata baśni i legend'
-                          : 'Step into a world of fairy tales and legends',
+                          ? 'Zarezerwuj swoją przygodę w Alvernia Planet'
+                          : 'Book your adventure at Alvernia Planet',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.imFellEnglishSc(
+                      style: GoogleFonts.robotoSlab(
                         fontSize: titleFontSize,
                         color: Colors.white,
+                        fontWeight: FontWeight.bold,
                         height: 1.3,
-                        letterSpacing: 1.5,
                         shadows: const [
                           Shadow(
                             blurRadius: 12,
@@ -137,14 +136,14 @@ class _FooterVillageState extends State<FooterVillage>
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
+                              color: Colors.black.withOpacity(0.25),
                               blurRadius: 12,
                               spreadRadius: 2,
                               offset: const Offset(0, 6),
                             ),
                           ],
                         ),
-                        child: const HtmlElementView(viewType: 'bookero-iframe'),
+                        child: const HtmlElementView(viewType: 'bookero-iframe-tour'),
                       ),
                     ),
                   ),
@@ -170,13 +169,13 @@ class _FooterVillageState extends State<FooterVillage>
                         icon: const Icon(Icons.calendar_month, color: Colors.white),
                         label: Text(
                           isPolish ? 'Przejdź do rezerwacji' : 'Go to reservation',
-                          style: GoogleFonts.imFellEnglishSc(
+                          style: GoogleFonts.roboto(
                             fontSize: buttonFontSize,
                             color: Colors.white,
                           ),
                         ),
                         style: TextButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 128, 94, 0),
+                          backgroundColor: const Color(0xFFBA68C8),
                           padding: EdgeInsets.symmetric(
                             vertical: screenHeight * 0.018,
                             horizontal: screenWidth * 0.08,

@@ -22,6 +22,7 @@ dependencies:
   icons_plus: ^5.0.0
   url_launcher: ^6.3.1
   flutter_widget_from_html: ^0.16.0
+  photo_view: ^0.15.0
 
 dev_dependencies:
   flutter_test:
@@ -40,3 +41,7 @@ flutter:
     - assets/alverdorf_page/
     - assets/alverdorf_page/step/
     - assets/o_nas/
+    - assets/tour_page/
+    - assets/galery/VL/
+    - assets/galery/AP/
+

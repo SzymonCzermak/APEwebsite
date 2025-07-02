@@ -1,8 +1,15 @@
+import 'package:apewebsite/pages/tour/tour_page_10.dart';
+import 'package:apewebsite/pages/tour/tour_page_11.dart';
 import 'package:apewebsite/pages/tour/tour_page_3.dart';
+import 'package:apewebsite/pages/tour/tour_page_4.dart';
+import 'package:apewebsite/pages/tour/tour_page_5.dart';
+import 'package:apewebsite/pages/tour/tour_page_7.dart';
+import 'package:apewebsite/pages/tour/tour_page_8.dart';
+import 'package:apewebsite/pages/tour/tour_page_9.dart';
+import 'package:apewebsite/pages/tour/tour_step_6.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import 'package:apewebsite/background/AnimatedEducationalBackground.dart';
 import 'package:apewebsite/pages/tour/tour_step_1.dart';
 import 'package:apewebsite/pages/tour/tour_step_2.dart';
@@ -29,43 +36,62 @@ class _TourPageState extends State<TourPage> {
       TourStep1(onNext: _scrollToNextPage),
       TourStep2(onNext: _scrollToNextPage),
       const TourStep3(),
+      const TourStep4(),
+      const TourStep5(),
+      const TourStep6(),
+      const TourStep7(),
+      const TourStep8(),
+      const TourStep9(),
+      const TourStep10(),
+      const TourStep11(),
     ];
   }
 
   void _handleScroll(double delta, {required bool isMouse}) async {
-    if (!isScrolling) {
-      isScrolling = true;
+  if (!isScrolling) {
+    final currentPage = _pageController.page?.round() ?? 0;
 
-      if (isMouse) {
-        if (delta > 0) {
-          await _pageController.nextPage(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut,
-          );
-        } else if (delta < 0) {
-          await _pageController.previousPage(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut,
-          );
-        }
-      } else {
-        if (delta < 0) {
-          await _pageController.nextPage(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut,
-          );
-        } else if (delta > 0) {
-          await _pageController.previousPage(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut,
-          );
-        }
-      }
-
-      await Future.delayed(const Duration(milliseconds: 800));
-      isScrolling = false;
+    // Ograniczenia na podstawie typu wejścia i kierunku przewijania
+    if ((isMouse && delta > 0 && currentPage == _pages.length - 1) || // myszka: dół na końcu
+        (isMouse && delta < 0 && currentPage == 0) ||                 // myszka: góra na początku
+        (!isMouse && delta < 0 && currentPage == _pages.length - 1) ||// touch: dół na końcu
+        (!isMouse && delta > 0 && currentPage == 0)) {                // touch: góra na początku
+      return;
     }
+
+    isScrolling = true;
+
+    if (isMouse) {
+      if (delta > 0) {
+        await _pageController.nextPage(
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeInOut,
+        );
+      } else {
+        await _pageController.previousPage(
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeInOut,
+        );
+      }
+    } else {
+      if (delta < 0) {
+        await _pageController.nextPage(
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeInOut,
+        );
+      } else {
+        await _pageController.previousPage(
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
+
+    await Future.delayed(const Duration(milliseconds: 800));
+    isScrolling = false;
   }
+}
+
 
   void _scrollToNextPage() {
     _pageController.nextPage(

@@ -2,43 +2,53 @@ import 'package:apewebsite/language_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:apewebsite/styles/color.dart';
 
 class TourStep4 extends StatefulWidget {
   const TourStep4({super.key});
 
   @override
-  State<TourStep4> createState() => _TourStep4State();
+  State<TourStep4> createState() => _TourStep3State();
 }
 
-class _TourStep4State extends State<TourStep4>
-    with TickerProviderStateMixin {
+class _TourStep3State extends State<TourStep4> with TickerProviderStateMixin {
   late final AnimationController _titleController;
   late final AnimationController _descController;
   late final AnimationController _imageController;
+  late final AnimationController _lineController;
+  late final AnimationController _topBottomLineController;
+  late final Animation<double> _lineAnimation;
+  late final Animation<double> _topBottomLineAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    _titleController = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-    _descController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-    _imageController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
+    _titleController = AnimationController(duration: const Duration(milliseconds: 250), vsync: this);
+    _descController = AnimationController(duration: const Duration(milliseconds: 150), vsync: this);
+    _imageController = AnimationController(duration: const Duration(milliseconds: 400), vsync: this);
+    _lineController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
+    _topBottomLineController = AnimationController(duration: const Duration(milliseconds: 450), vsync: this);
+
+    _lineAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+      parent: _lineController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _topBottomLineAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _topBottomLineController, curve: Curves.easeOut),
     );
 
     Future.delayed(const Duration(milliseconds: 300), () {
       _titleController.forward().then((_) {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          _descController.forward();
-          _imageController.forward();
+        _lineController.forward().then((_) {
+          Future.delayed(const Duration(milliseconds: 200), () {
+            _descController.forward().then((_) {
+              Future.delayed(const Duration(milliseconds: 100), () {
+                _topBottomLineController.forward();
+                _imageController.forward();
+              });
+            });
+          });
         });
       });
     });
@@ -49,6 +59,8 @@ class _TourStep4State extends State<TourStep4>
     _titleController.dispose();
     _descController.dispose();
     _imageController.dispose();
+    _lineController.dispose();
+    _topBottomLineController.dispose();
     super.dispose();
   }
 
@@ -72,6 +84,7 @@ class _TourStep4State extends State<TourStep4>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                _AnimatedLine(animation: _topBottomLineAnimation, isTop: true),
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
@@ -94,6 +107,15 @@ class _TourStep4State extends State<TourStep4>
                       : Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+                            // TEKST PO LEWEJ
+                            Expanded(
+                              flex: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 24.0),
+                                child: _buildText(titleFontSize, bodyFontSize, isPolish),
+                              ),
+                            ),
+                            // OBRAZEK PO PRAWEJ
                             Expanded(
                               flex: 2,
                               child: _AnimatedSlideFade(
@@ -102,17 +124,10 @@ class _TourStep4State extends State<TourStep4>
                                 child: _buildImage(isMobile: isMobile),
                               ),
                             ),
-                            Expanded(
-                              flex: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 24.0),
-                                child: _buildText(
-                                    titleFontSize, bodyFontSize, isPolish),
-                              ),
-                            ),
                           ],
                         ),
                 ),
+                _AnimatedLine(animation: _topBottomLineAnimation, isTop: false),
               ],
             ),
           ),
@@ -124,28 +139,57 @@ class _TourStep4State extends State<TourStep4>
   Widget _buildText(double titleSize, double bodySize, bool isPolish) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _AnimatedSlideFade(
           animation: _titleController,
           beginOffset: const Offset(0, 0.2),
-          child: Text(
-            isPolish
-                ? 'Gwiazdy i reklamy + Rekwizyty'
-                : 'Stars and Ads + Props',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.imFellEnglishSc(
-              fontSize: titleSize,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              shadows: const [
-                Shadow(
-                  blurRadius: 6,
-                  color: Colors.black87,
-                  offset: Offset(0, 2),
+          child: Column(
+            children: [
+              Text(
+                isPolish ? 'Jakie role są na planie filmowym?' : 'What roles exist on a film set?',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.robotoSlab(
+                  fontSize: titleSize,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  shadows: const [
+                    Shadow(
+                      blurRadius: 6,
+                      color: Colors.black,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 6),
+              AnimatedBuilder(
+                animation: _lineAnimation,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _lineAnimation.value,
+                    child: Transform.translate(
+                      offset: Offset(0, 10 * (1 - _lineAnimation.value)),
+                      child: Container(
+                        height: 2,
+                        width: 300,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                        Colors.black,
+                        Color(0xFFBA68C8),
+                        Color.fromARGB(255, 91, 0, 107),
+                        Colors.black,
+                      ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 16),
@@ -154,10 +198,10 @@ class _TourStep4State extends State<TourStep4>
           beginOffset: const Offset(0, 0.25),
           child: Text(
             isPolish
-                ? 'Zobacz, kto kręcił w Alvernia Planet: znane twarze, światowe reklamy i oryginalne rekwizyty, które naprawdę grały w filmach!'
-                : 'See who filmed at Alvernia Planet: famous faces, global ads, and original props that actually starred in movies!',
+                ? 'Kim jest reżyser, a kto naprawdę „trzyma kamerę”? Czym zajmuje się scenograf, a kto dba o dźwięk? Podczas tej części wycieczki odkryjesz kulisy pracy filmowej ekipy i poznasz ludzi, bez których nie powstałby żaden film.'
+                : 'Who’s really behind the camera? What does a set designer do, and who’s responsible for sound? In this part of the tour, you’ll dive behind the scenes and discover the people who make movie magic possible.',
             textAlign: TextAlign.center,
-            style: GoogleFonts.imFellEnglishSc(
+            style: GoogleFonts.roboto(
               fontSize: bodySize,
               color: Colors.white,
               height: 1.4,
@@ -176,24 +220,25 @@ class _TourStep4State extends State<TourStep4>
   }
 
   Widget _buildImage({required bool isMobile}) {
-    return Center(
-      child: SizedBox(
-        width: isMobile ? 180 : 320,
-        height: isMobile ? 200 : null,
-        child: AspectRatio(
-          aspectRatio: 9 / 16,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              'assets/tour_page/step/4.png',
-              fit: BoxFit.cover,
-              filterQuality: FilterQuality.medium,
-            ),
-          ),
+  final screenHeight = MediaQuery.of(context).size.height;
+  final imageHeight = isMobile ? screenHeight * 0.3 : screenHeight * 0.5;
+  final imageWidth = imageHeight * (9 / 16); // Proporcja 9:16
+
+  return Center(
+    child: SizedBox(
+      height: imageHeight,
+      width: imageWidth,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Image.asset(
+          'assets/tour_page/7.png',
+          fit: BoxFit.cover,
+          filterQuality: FilterQuality.medium,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class _AnimatedSlideFade extends StatelessWidget {
@@ -225,6 +270,54 @@ class _AnimatedSlideFade extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _AnimatedLine extends StatelessWidget {
+  final Animation<double> animation;
+  final bool isTop;
+
+  const _AnimatedLine({
+    required this.animation,
+    required this.isTop,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (_, __) => Opacity(
+        opacity: animation.value,
+        child: Transform.translate(
+          offset: Offset(0, (isTop ? -1 : 1) * 20 * (1 - animation.value)),
+          child: Container(
+            height: 4,
+            margin: const EdgeInsets.symmetric(vertical: 12),
+            width: 1200,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+colors: [
+                        Colors.black,
+                        Color(0xFFBA68C8),
+                        Color.fromARGB(255, 91, 0, 107),
+                        Colors.black,
+                      ],
+              ),
+              borderRadius: BorderRadius.circular(1),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.9),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
