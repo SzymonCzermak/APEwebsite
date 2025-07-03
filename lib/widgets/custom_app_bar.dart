@@ -29,7 +29,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final isPolish = context.watch<LanguageController>().isPolish;
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 1250;
+    final isMobile = screenWidth < 1350;
 
     return Container(
       height: 90,
@@ -161,70 +161,82 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget _buildTab(BuildContext context, String pl, String en, PageType pageType) {
-    final isPolish = context.watch<LanguageController>().isPolish;
-    final isSelected = currentPage == pageType;
-    final gradient = AppColors.getGradientForPage(pageType);
-    final mainColor = AppColors.getColorForPage(pageType);
+Widget _buildTab(BuildContext context, String pl, String en, PageType pageType) {
+  final isPolish = context.watch<LanguageController>().isPolish;
+  final isSelected = currentPage == pageType;
+  final gradient = AppColors.getGradientForPage(pageType);
+  final mainColor = AppColors.getColorForPage(pageType);
 
-    IconData icon;
-    IconData iconOutlined;
+  IconData icon;
+  IconData iconOutlined;
 
-    switch (pageType) {
-      case PageType.tour:
-        icon = Icons.school;
-        iconOutlined = Icons.school_outlined;
-        break;
-      case PageType.village:
-        icon = Icons.park;
-        iconOutlined = Icons.park_outlined;
-        break;
-      case PageType.about:
-        icon = Icons.info;
-        iconOutlined = Icons.info_outline;
-        break;
-      case PageType.contact:
-        icon = Icons.mail;
-        iconOutlined = Icons.mail_outline;
-        break;
-      case PageType.social:
-        icon = Icons.share;
-        iconOutlined = Icons.share_outlined;
-        break;
-      default:
-        icon = Icons.home;
-        iconOutlined = Icons.home_outlined;
-    }
+  switch (pageType) {
+    case PageType.tour:
+      icon = Icons.school;
+      iconOutlined = Icons.school_outlined;
+      break;
+    case PageType.village:
+      icon = Icons.park;
+      iconOutlined = Icons.park_outlined;
+      break;
+    case PageType.about:
+      icon = Icons.info;
+      iconOutlined = Icons.info_outline;
+      break;
+    case PageType.contact:
+      icon = Icons.mail;
+      iconOutlined = Icons.mail_outline;
+      break;
+    case PageType.social:
+      icon = Icons.share;
+      iconOutlined = Icons.share_outlined;
+      break;
+    default:
+      icon = Icons.home;
+      iconOutlined = Icons.home_outlined;
+  }
 
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, _routeFromPageType(pageType)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
+  return MouseRegion(
+    cursor: SystemMouseCursors.click,
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        hoverColor: Colors.white10,
+        onTap: () => Navigator.pushNamed(context, _routeFromPageType(pageType)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                isSelected ? icon : iconOutlined,
-                color: isSelected ? mainColor : const Color.fromARGB(255, 180, 180, 180),
-                size: 18,
+              Row(
+                children: [
+                  Icon(
+                    isSelected ? icon : iconOutlined,
+                    color: isSelected ? mainColor : const Color.fromARGB(255, 180, 180, 180),
+                    size: 18,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    isPolish ? pl : en,
+                    style: TextStyle(
+                      color: isSelected ? mainColor : const Color.fromARGB(255, 181, 180, 180),
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w400,
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 4),
-              Text(
-                isPolish ? pl : en,
-                style: TextStyle(
-                  color: isSelected ? mainColor : const Color.fromARGB(255, 181, 180, 180),
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w400,
-                  fontSize: 15,
-                ),
-              ),
+              const SizedBox(height: 6),
+              _buildUnderline(isSelected, gradient),
             ],
           ),
-          const SizedBox(height: 6),
-          _buildUnderline(isSelected, gradient),
-        ],
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildUnderline(bool isSelected, LinearGradient gradient) {
     return AnimatedContainer(

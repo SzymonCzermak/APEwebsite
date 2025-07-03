@@ -174,16 +174,14 @@ class _TourStep11State extends State<TourStep11> with TickerProviderStateMixin {
                             color: Colors.white,
                           ),
                         ),
-                        style: TextButton.styleFrom(
-                          backgroundColor: const Color(0xFFBA68C8),
-                          padding: EdgeInsets.symmetric(
-                            vertical: screenHeight * 0.018,
-                            horizontal: screenWidth * 0.08,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
+                        style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 91, 0, 107),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32, vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                       ),
                     ),
                   ),

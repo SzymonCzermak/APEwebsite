@@ -28,7 +28,6 @@ class _VillagePageState extends State<VillagePage> {
   void initState() {
     super.initState();
     _pages = [
-            const FooterVillage(),
       VillageStep1(onNext: _scrollToNextPage),
       const VillageStep2(),
       const VillageStep3(),

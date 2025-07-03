@@ -263,7 +263,6 @@ class _VillageStep1State extends State<VillageStep1>
             },
           ),
         ),
-        const NavigationHintOverlay(),
       ],
     );
   }
